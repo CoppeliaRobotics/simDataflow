@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml-stylesheet type="text/xsl" href="callbacks.xsl"?>
+
+<plugin name="Dataflow" author="federico.ferri.it@gmail.com">
+    <description>Dataflow programming core component for V-REP</description>
+    <command name="add">
+        <description>Add a node.</description>
+        <params>
+            <param name="cmd" type="string">
+                <description>Node command string (i.e. object name plus arguments)</description>
+            </param>
+            <param name="x" type="int" default="-1">
+                <description>An optional position for the node in the editor</description>
+            </param>
+            <param name="y" type="int" default="-1">
+                <description>An optional position for the node in the editor</description>
+            </param>
+        </params>
+        <return>
+            <param name="nodeId" type="int">
+                <description>A unique identifier for the node.</description>
+            </param>
+        </return>
+    </command>
+    <command name="remove">
+        <description>Remove a node.</description>
+        <params>
+            <param name="nodeId" type="int">
+                <description>The node identifier.</description>
+            </param>
+        </params>
+        <return>
+        </return>
+    </command>
+    <command name="connect">
+        <description>Add a connection.</description>
+        <params>
+            <param name="srcNodeId" type="int">
+                <description>Identifier for the source node.</description>
+            </param>
+            <param name="srcOutlet" type="int">
+                <description>Index of the source outlet.</description>
+            </param>
+            <param name="dstNodeId" type="int">
+                <description>Identifier for the destination node.</description>
+            </param>
+            <param name="dstInlet" type="int">
+                <description>Index of the destination inlet.</description>
+            </param>
+        </params>
+        <return>
+        </return>
+    </command>
+    <command name="disconnect">
+        <description>Remove a connection.</description>
+        <params>
+            <param name="srcNodeId" type="int">
+                <description>Identifier for the source node.</description>
+            </param>
+            <param name="srcOutlet" type="int">
+                <description>Index of the source outlet.</description>
+            </param>
+            <param name="dstNodeId" type="int">
+                <description>Identifier for the destination node.</description>
+            </param>
+            <param name="dstInlet" type="int">
+                <description>Index of the destination inlet.</description>
+            </param>
+        </params>
+        <return>
+        </return>
+    </command>
+    <command name="getNodes">
+        <description>Retrieve all nodes.</description>
+        <params>
+        </params>
+        <return>
+            <param name="nodeIds" type="table" item-type="int">
+                <description>Vector of node identifiers.</description>
+            </param>
+        </return>
+    </command>
+    <command name="getConnections">
+        <description>Retrieve all nodes.</description>
+        <params>
+        </params>
+        <return>
+            <param name="numConnections" type="int">
+                <description>Number of connections returned.</description>
+            </param>
+            <param name="srcNodeIds" type="table" item-type="int">
+                <description>Identifier for the source node.</description>
+            </param>
+            <param name="srcOutlets" type="table" item-type="int">
+                <description>Index of the source outlet.</description>
+            </param>
+            <param name="dstNodeIds" type="table" item-type="int">
+                <description>Identifier for the destination node.</description>
+            </param>
+            <param name="dstInlets" type="table" item-type="int">
+                <description>Index of the destination inlet.</description>
+            </param>
+        </return>
+    </command>
+    <command name="getNodeInfo">
+        <description>Retrieve information about a node.</description>
+        <params>
+            <param name="nodeId" type="int">
+                <description>Node identifier.</description>
+            </param>
+        </params>
+        <return>
+            <param name="cmd" type="string">
+                <description>Node cmd string.</description>
+            </param>
+            <param name="inletCount" type="int">
+                <description>Number of inlets.</description>
+            </param>
+            <param name="outletCount" type="int">
+                <description>Number of outlets.</description>
+            </param>
+            <param name="x" type="int">
+                <description>x position.</description>
+            </param>
+            <param name="y" type="int">
+                <description>y position.</description>
+            </param>
+        </return>
+    </command>
+</plugin>
