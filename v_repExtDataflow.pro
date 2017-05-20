@@ -1,4 +1,4 @@
-QT += core
+QT += core gui widgets
 
 TARGET = v_repExtDataflow
 TEMPLATE = lib
