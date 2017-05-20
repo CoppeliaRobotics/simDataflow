@@ -29,14 +29,21 @@
 
 #include "v_repExtDataflow.h"
 #include "v_repLib.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <map>
 #include <stdexcept>
+
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
+
+#include <QWidget>
+#include <QMainWindow>
+#include <QLabel>
+#include <QVBoxLayout>
 
 #ifdef _WIN32
     #ifdef QT_COMPIL
@@ -51,7 +58,11 @@
 #define _stricmp strcasecmp
 #endif /* __linux || __APPLE__ */
 
+class MainWindow;
+
 LIBRARY vrepLib; // the V-REP library that we will dynamically load and bind
+simInt menuItemHandle[1];
+MainWindow *mainWindow;
 
 #include "plugin.h"
 
@@ -134,6 +145,24 @@ void getNodeInfo(SScriptCallBack *p, const char *cmd, getNodeInfo_in *in, getNod
     out->y = -1;
 }
 
+class MainWindow : public QMainWindow
+{
+public:
+    MainWindow(QWidget *parent)
+        : QMainWindow(parent)
+    {
+        QLabel *label = new QLabel("Nothing to see here.", this);
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        layout->addWidget(label);
+
+        QWidget *window = new QWidget();
+        window->setLayout(layout);
+
+        setCentralWidget(window);
+    }
+};
+
 VREP_DLLEXPORT unsigned char v_repStart(void* reservedPointer, int reservedInt)
 {
     char curDirAndFile[1024];
@@ -186,6 +215,10 @@ VREP_DLLEXPORT unsigned char v_repStart(void* reservedPointer, int reservedInt)
         return 0;
     }
 
+    simAddModuleMenuEntry("", 1, &menuItemHandle[0]);
+    simSetModuleMenuItemState(menuItemHandle[0], 1, "Show dataflow graph");
+    mainWindow = new MainWindow(reinterpret_cast<QWidget*>(simGetMainWindow(1)));
+
     return PLUGIN_VERSION; // initialization went fine, we return the version number of this plugin (can be queried with simGetModuleName)
 }
 
@@ -211,6 +244,14 @@ VREP_DLLEXPORT void* v_repMessage(int message, int* auxiliaryData, void* customD
             // do some initialization in SIM thread here...
         }
         DFNode::tickAll();
+    }
+    else if(message == sim_message_eventcallback_menuitemselected)
+    {
+        if(mainWindow->isVisible())
+            mainWindow->hide();
+        else
+            mainWindow->show();
+        simSetModuleMenuItemState(menuItemHandle[0], mainWindow->isVisible() ? 3 : 1, "Show dataflow graph");
     }
 
     // Keep following unchanged:
