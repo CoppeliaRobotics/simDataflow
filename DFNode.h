@@ -88,7 +88,7 @@ private:
         {
             std::stringstream ss;
             ss << "invalid " << n << " index: " << i;
-            throw std::range_error(ss.str().c_str());
+            throw std::range_error(ss.str());
         }
     }
 

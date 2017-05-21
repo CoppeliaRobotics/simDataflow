@@ -146,7 +146,7 @@ DFNode * DFNode::byId(DFNodeID id)
     {
         std::stringstream ss;
         ss << "invalid node id: " << id;
-        throw std::range_error(ss.str().c_str());
+        throw std::range_error(ss.str());
     }
     return it->second;
 }
