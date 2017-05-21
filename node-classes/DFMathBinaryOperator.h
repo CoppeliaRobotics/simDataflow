@@ -27,34 +27,30 @@
 // Federico Ferri <federico.ferri.it at gmail dot com>
 // -------------------------------------------------------------------
 
-#include "DFNodeFactory.h"
-#include "DFMathBinaryOperator.h"
-#include "DFObjectPos.h"
-#include "DFPrint.h"
-#include "plugin.h"
+#ifndef DFMATHBINARYOPERATOR_H_INCLUDED
+#define DFMATHBINARYOPERATOR_H_INCLUDED
 
-#include <iostream>
+#include "DFNode.h"
+#include "DFVector.h"
 
-DFNodeFactory nodeFactory;
+#include <map>
 
-DFNode * DFNodeFactory::create(const std::vector<std::string> &args)
+class DFMathBinaryOperator : public DFNode
 {
-    std::map<std::string, PCreateFunc>::const_iterator it = createFuncs_.find(args[0]);
-    if(it != createFuncs_.end())
-        return it->second(args);
-    else
-        return 0L;
-}
+private:
+    DFVector state_;
+    std::string op_;
 
-void initNodeFactory()
-{
-    std::cout << PLUGIN_NAME << ": initializing node factory" << std::endl;
-    nodeFactory.registerClass<DFMathBinaryOperator>("+");
-    nodeFactory.registerClass<DFMathBinaryOperator>("-");
-    nodeFactory.registerClass<DFMathBinaryOperator>("*");
-    nodeFactory.registerClass<DFMathBinaryOperator>("/");
-    nodeFactory.registerClass<DFObjectPos>("objectpos");
-    nodeFactory.registerClass<DFPrint>("print");
-    std::cout << PLUGIN_NAME << ": initialized node factory (" << nodeFactory.size() << " classes)" << std::endl;
-}
+public:
+    DFMathBinaryOperator(const std::vector<std::string> &args);
+    void onDataReceived(size_t inlet, DFData *data);
 
+protected:
+    void op(DFVector &x, const DFVector &y);
+    void add(DFVector &x, const DFVector &y);
+    void mul(DFVector &x, const DFVector &y);
+    void sub(DFVector &x, const DFVector &y);
+    void div(DFVector &x, const DFVector &y);
+};
+
+#endif // DFMATHBINARYOPERATOR_H_INCLUDED

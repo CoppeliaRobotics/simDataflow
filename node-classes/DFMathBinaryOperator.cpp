@@ -27,34 +27,66 @@
 // Federico Ferri <federico.ferri.it at gmail dot com>
 // -------------------------------------------------------------------
 
-#include "DFNodeFactory.h"
 #include "DFMathBinaryOperator.h"
-#include "DFObjectPos.h"
-#include "DFPrint.h"
-#include "plugin.h"
+#include "DFData.h"
 
-#include <iostream>
-
-DFNodeFactory nodeFactory;
-
-DFNode * DFNodeFactory::create(const std::vector<std::string> &args)
+DFMathBinaryOperator::DFMathBinaryOperator(const std::vector<std::string> &args)
+    : DFNode(args)
 {
-    std::map<std::string, PCreateFunc>::const_iterator it = createFuncs_.find(args[0]);
-    if(it != createFuncs_.end())
-        return it->second(args);
-    else
-        return 0L;
+    setNumInlets(2);
+    setNumOutlets(2);
+
+    op_ = args[0];
+
+    for(size_t i = 0; i < 3; i++)
+        state_.data[i] = (i + 1) < args.size() ? boost::lexical_cast<double>(args[i + 1]) : 0;
 }
 
-void initNodeFactory()
+void DFMathBinaryOperator::op(DFVector &x, const DFVector &y)
 {
-    std::cout << PLUGIN_NAME << ": initializing node factory" << std::endl;
-    nodeFactory.registerClass<DFMathBinaryOperator>("+");
-    nodeFactory.registerClass<DFMathBinaryOperator>("-");
-    nodeFactory.registerClass<DFMathBinaryOperator>("*");
-    nodeFactory.registerClass<DFMathBinaryOperator>("/");
-    nodeFactory.registerClass<DFObjectPos>("objectpos");
-    nodeFactory.registerClass<DFPrint>("print");
-    std::cout << PLUGIN_NAME << ": initialized node factory (" << nodeFactory.size() << " classes)" << std::endl;
+    if(op_ == "+") add(x, y);
+    else if(op_ == "-") sub(x, y);
+    else if(op_ == "*") mul(x, y);
+    else if(op_ == "/") div(x, y);
 }
 
+void DFMathBinaryOperator::add(DFVector &x, const DFVector &y)
+{
+    for(int i = 0; i < 3; i++)
+        x.data[i] += y.data[i];
+}
+
+void DFMathBinaryOperator::sub(DFVector &x, const DFVector &y)
+{
+    for(int i = 0; i < 3; i++)
+        x.data[i] -= y.data[i];
+}
+
+void DFMathBinaryOperator::mul(DFVector &x, const DFVector &y)
+{
+    for(int i = 0; i < 3; i++)
+        x.data[i] *= y.data[i];
+}
+
+void DFMathBinaryOperator::div(DFVector &x, const DFVector &y)
+{
+    for(int i = 0; i < 3; i++)
+        x.data[i] /= y.data[i];
+}
+
+void DFMathBinaryOperator::onDataReceived(size_t inlet, DFData *data)
+{
+    if(DFVector *vec = dynamic_cast<DFVector*>(data))
+    {
+        if(inlet == 0)
+        {
+            DFVector tmp = *vec;
+            op(tmp, state_);
+            sendData(0, &tmp);
+        }
+        else
+        {
+            state_ = *vec;
+        }
+    }
+}

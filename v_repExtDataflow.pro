@@ -75,6 +75,7 @@ PRE_TARGETDEPS += reference.html
 
 HEADERS += \
     DFNode.h \
+    node-classes/DFMathBinaryOperator.h \
     node-classes/DFObjectPos.h \
     node-classes/DFPrint.h \
     DFData.h \
@@ -87,6 +88,7 @@ HEADERS += \
 
 SOURCES += \
     DFNode.cpp \
+    node-classes/DFMathBinaryOperator.cpp \
     node-classes/DFObjectPos.cpp \
     node-classes/DFPrint.cpp \
     DFData.cpp \
