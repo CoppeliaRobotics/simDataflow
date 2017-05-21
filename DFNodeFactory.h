@@ -32,9 +32,34 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 class DFNode;
 
-DFNode * nodeFactory(const std::vector<std::string> &args);
+class DFNodeFactory
+{
+public:
+    template<typename T>
+    void registerClass(std::string name)
+    {
+        createFuncs_[name] = &createFunc<T>;
+    }
+
+    DFNode * create(const std::vector<std::string> &args);
+
+private:
+    template<typename T>
+    static DFNode * createFunc(const std::vector<std::string> &args)
+    {
+        return new T(args);
+    }
+
+    typedef DFNode* (*PCreateFunc)(const std::vector<std::string> &);
+    std::map<std::string, PCreateFunc> createFuncs_;
+};
+
+extern DFNodeFactory nodeFactory;
+
+void initNodeFactory();
 
 #endif // NODEFACTORY_H_INCLUDED

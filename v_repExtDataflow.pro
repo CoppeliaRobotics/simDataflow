@@ -79,7 +79,7 @@ HEADERS += \
     node-classes/DFPrint.h \
     DFData.h \
     data-classes/DFVector.h \
-    nodeFactory.h \
+    DFNodeFactory.h \
     plugin.h \
     v_repExtDataflow.h \
     ../include/v_repLib.h \
@@ -91,7 +91,7 @@ SOURCES += \
     node-classes/DFPrint.cpp \
     DFData.cpp \
     data-classes/DFVector.cpp \
-    nodeFactory.cpp \
+    DFNodeFactory.cpp \
     v_repExtDataflow.cpp \
     ../common/v_repLib.cpp \
     stubs.cpp

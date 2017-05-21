@@ -70,7 +70,7 @@ MainWindow *mainWindow;
 #include "stubs.h"
 
 #include "DFNode.h"
-#include "nodeFactory.h"
+#include "DFNodeFactory.h"
 
 void add(SScriptCallBack *p, const char *cmd, add_in *in, add_out *out)
 {
@@ -83,8 +83,17 @@ void add(SScriptCallBack *p, const char *cmd, add_in *in, add_out *out)
         cmdt << (it == tokenizer.begin() ? "" : " ") << *it;
     }
 
-    DFNode *node = nodeFactory(tokens);
-    out->nodeId = node->id();
+    DFNode *node = nodeFactory.create(tokens);
+    if(node)
+    {
+        out->nodeId = node->id();
+    }
+    else
+    {
+        std::stringstream ss;
+        ss << "no such class: " << tokens[0];
+        throw std::runtime_error(ss.str());
+    }
 }
 
 void remove(SScriptCallBack *p, const char *cmd, remove_in *in, remove_out *out)
@@ -242,6 +251,7 @@ VREP_DLLEXPORT void* v_repMessage(int message, int* auxiliaryData, void* customD
         {
             firstInstancePass = false;
             // do some initialization in SIM thread here...
+            initNodeFactory();
         }
         DFNode::tickAll();
     }
