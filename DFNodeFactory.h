@@ -47,6 +47,8 @@ public:
 
     DFNode * create(const std::vector<std::string> &args);
 
+    inline size_t size() {return createFuncs_.size();}
+
 private:
     template<typename T>
     static DFNode * createFunc(const std::vector<std::string> &args)

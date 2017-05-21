@@ -30,6 +30,9 @@
 #include "DFNodeFactory.h"
 #include "DFObjectPos.h"
 #include "DFPrint.h"
+#include "plugin.h"
+
+#include <iostream>
 
 DFNodeFactory nodeFactory;
 
@@ -44,7 +47,9 @@ DFNode * DFNodeFactory::create(const std::vector<std::string> &args)
 
 void initNodeFactory()
 {
+    std::cout << PLUGIN_NAME << ": initializing node factory" << std::endl;
     nodeFactory.registerClass<DFObjectPos>("objectpos");
     nodeFactory.registerClass<DFPrint>("print");
+    std::cout << PLUGIN_NAME << ": initialized node factory (" << nodeFactory.size() << " classes)" << std::endl;
 }
 
