@@ -29,6 +29,13 @@
 
 #include "DFVector.h"
 
+DFVector DFVector::operator=(const DFVector &o)
+{
+    for(int i = 0; i < 3; i++)
+        data[i] = o.data[i];
+    return *this;
+}
+
 std::string DFVector::str()
 {
     std::stringstream ss;
