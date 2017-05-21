@@ -29,6 +29,18 @@
 
 #include "DFObjectPos.h"
 
+simInt getObjectHandle(const std::string &strArg)
+{
+    try
+    {
+        return boost::lexical_cast<simInt>(strArg);
+    }
+    catch(boost::bad_lexical_cast &ex)
+    {
+        return simGetObjectHandle(strArg.c_str());
+    }
+}
+
 DFObjectPos::DFObjectPos(const std::vector<std::string> &args)
     : DFNode(args)
 {
@@ -37,8 +49,8 @@ DFObjectPos::DFObjectPos(const std::vector<std::string> &args)
     if(args.size() < 2)
         throw std::runtime_error("too few args");
 
-    handle_ = boost::lexical_cast<simInt>(args[1]);
-    relToHandle_ = args.size() >= 3 ? boost::lexical_cast<simInt>(args[2]) : -1;
+    handle_ = getObjectHandle(args[1]);
+    relToHandle_ = args.size() >= 3 ? getObjectHandle(args[2]) : -1;
 }
 
 void DFObjectPos::tick()
