@@ -34,8 +34,18 @@
 #include "plugin.h"
 
 #include <iostream>
+#include <boost/tokenizer.hpp>
 
 DFNodeFactory nodeFactory;
+
+DFNode * DFNodeFactory::create(const std::string &args)
+{
+    boost::tokenizer<> tokenizer(args);
+    std::vector<std::string> tokens;
+    for(boost::tokenizer<>::iterator it = tokenizer.begin(); it != tokenizer.end(); ++it)
+        tokens.push_back(*it);
+    return create(tokens);
+}
 
 DFNode * DFNodeFactory::create(const std::vector<std::string> &args)
 {
