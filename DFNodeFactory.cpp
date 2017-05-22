@@ -49,11 +49,18 @@ DFNode * DFNodeFactory::create(const std::string &args)
 
 DFNode * DFNodeFactory::create(const std::vector<std::string> &args)
 {
+    if(args.size() == 0)
+    {
+        throw std::runtime_error("cannot instantiate object with empty commandline");
+    }
     std::map<std::string, PCreateFunc>::const_iterator it = createFuncs_.find(args[0]);
-    if(it != createFuncs_.end())
-        return it->second(args);
-    else
-        return 0L;
+    if(it == createFuncs_.end())
+    {
+        std::stringstream ss;
+        ss << "no such class: " << args[0];
+        throw std::runtime_error(ss.str());
+    }
+    return it->second(args);
 }
 
 void initNodeFactory()
