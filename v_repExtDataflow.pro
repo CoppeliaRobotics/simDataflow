@@ -8,6 +8,7 @@ DEFINES += QT_COMPIL
 CONFIG += shared debug_and_release
 INCLUDEPATH += "../include"
 INCLUDEPATH += "external/QDataflowCanvas"
+INCLUDEPATH += "external"
 INCLUDEPATH += "data-classes"
 INCLUDEPATH += "node-classes"
 
@@ -88,6 +89,7 @@ HEADERS += \
     plugin.h \
     debug.h \
     v_repExtDataflow.h \
+    external/v_repPlusPlus/Plugin.h \
     external/QDataflowCanvas/qdataflowcanvas.h \
     external/QDataflowCanvas/qdataflowmodel.h \
     ../include/v_repLib.h \
@@ -106,6 +108,7 @@ SOURCES += \
     DFWindow.cpp \
     debug.cpp \
     v_repExtDataflow.cpp \
+    external/v_repPlusPlus/Plugin.cpp \
     external/QDataflowCanvas/qdataflowcanvas.cpp \
     external/QDataflowCanvas/qdataflowmodel.cpp \
     ../common/v_repLib.cpp \
