@@ -44,17 +44,19 @@ class DFData;
 struct DFNodeInlet;
 struct DFNodeOutlet;
 
-struct DFNodeInlet
+struct DFNodeIOlet
 {
     DFNode *node;
     size_t index;
+};
+
+struct DFNodeInlet : public DFNodeIOlet
+{
     std::vector<DFNodeOutlet*> connections;
 };
 
-struct DFNodeOutlet
+struct DFNodeOutlet : public DFNodeIOlet
 {
-    DFNode *node;
-    size_t index;
     std::vector<DFNodeInlet*> connections;
 };
 
