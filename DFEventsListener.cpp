@@ -55,7 +55,7 @@ DFEventsListener::DFEventsListener()
 
 void DFEventsListener::onNodeAdded(QDataflowModelNode *node)
 {
-    DBG << (void*)node << std::endl;
+    DBG << (void*)node << " text='" << node->text().toStdString() << "'" << std::endl;
     if(node->text() == "") return;
     std::string cmd = node->text().toStdString();
     DFNode *dfnode = nodeFactory.create(cmd);
@@ -85,40 +85,14 @@ void DFEventsListener::onNodePosChanged(QDataflowModelNode *node, QPoint pos)
 
 void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
 {
-    DBG << "node=" << (void*)node << std::endl;
-    std::vector<DFNodeInlet> dst;
-    std::vector<DFNodeOutlet> src;
-    size_t n = 0;
-    if(node->property("DFNode").isValid())
-    {
-        // store connections to (try to) restore after object is recreated:
-        DFNode *dfnode = (DFNode*)node->property("DFNode").value<void*>();
-        for(size_t i = 0; i < dfnode->inletCount(); i++)
-        {
-            DFNodeInlet inlet = dfnode->inlet(i);
-            inlet.node = 0L;
-            BOOST_FOREACH(DFNodeOutlet *outlet, inlet.connections)
-            {
-                src.push_back(*outlet);
-                dst.push_back(inlet);
-                n++;
-            }
-        }
-        for(size_t i = 0; i < dfnode->outletCount(); i++)
-        {
-            DFNodeOutlet outlet = dfnode->outlet(i);
-            outlet.node = 0L;
-            BOOST_FOREACH(DFNodeInlet *inlet, outlet.connections)
-            {
-                src.push_back(outlet);
-                dst.push_back(*inlet);
-                n++;
-            }
-        }
-    }
+    DBG << "node=" << (void*)node << " text='" << node->text().toStdString() << "'" << std::endl;
+    DFNode *oldnode = 0;
+    std::set<DFConnection> oldconns;
     if(node->property("DFNode").isValid())
     {
         DFNode *dfnode = (DFNode*)node->property("DFNode").value<void*>();
+        oldnode = dfnode;
+        oldconns = oldnode->connections();
         node->setProperty("DFNode", QVariant());
         DBG << "removing DFNode " << dfnode->id() << std::endl;
         delete dfnode;
@@ -129,17 +103,17 @@ void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
     }
     std::string cmd = node->text().toStdString();
     DFNode *dfnode = nodeFactory.create(cmd);
+    DBG << "created DFNode " << dfnode->id() << std::endl;
     node->setProperty("DFNode", qVariantFromValue((void*)dfnode));
     emit setNodeIOlets(node, dfnode->inletCount(), dfnode->outletCount());
-    // restore  connections
-    for(size_t i = 0; i < n; i++)
+    // restore connections
+    BOOST_FOREACH(DFConnection c, oldconns)
     {
-        DFNode *s = src[i].node, *d = dst[i].node;
-        if(!s) s = dfnode;
-        if(!d) d = dfnode;
-        if(s->outletCount() <= src[i].index) continue;
-        if(d->inletCount() <= dst[i].index) continue;
-        s->connect(src[i].index, d, dst[i].index);
+        DFNode *s = c.src == oldnode ? dfnode : c.src;
+        DFNode *d = c.dst == oldnode ? dfnode : c.dst;
+        if(s->outletCount() <= c.srcOutlet) continue;
+        if(d->inletCount() <= c.dstInlet) continue;
+        s->connect(c.srcOutlet, d, c.dstInlet);
     }
 }
 

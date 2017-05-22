@@ -35,9 +35,15 @@
 DFNodeIDMap DFNode::byId_;
 DFNodeID DFNode::nextNodeId_ = 0;
 
-bool DFNodeIOlet::operator<(const DFNodeIOlet &o)
+bool DFNodeIOlet::operator<(const DFNodeIOlet &o) const
 {
     return std::make_pair(node, index) < std::make_pair(o.node, o.index);
+}
+
+bool DFConnection::operator<(const DFConnection &o) const
+{
+    return std::make_pair(std::make_pair(src, srcOutlet), std::make_pair(dst, dstInlet))
+        < std::make_pair(std::make_pair(o.src, o.srcOutlet), std::make_pair(o.dst, o.dstInlet));
 }
 
 void DFNode::validateInlet(size_t i) const
@@ -108,14 +114,54 @@ size_t DFNode::outletCount() const
     return outlets_.size();
 }
 
+std::set<DFNodeOutlet> DFNode::inboundConnections(size_t inlet) const
+{
+    return inboundConnections_.at(inlet);
+}
+
+std::set<DFNodeInlet> DFNode::outboundConnections(size_t outlet) const
+{
+    return outboundConnections_.at(outlet);
+}
+
+std::set<DFConnection> DFNode::connections()
+{
+    std::set<DFConnection> ret;
+    BOOST_FOREACH(DFNodeInboundConnections::value_type x, inboundConnections_)
+    {
+        BOOST_FOREACH(DFNodeOutlet src, x.second)
+        {
+            DFConnection c;
+            c.src = src.node;
+            c.srcOutlet = src.index;
+            c.dst = this;
+            c.dstInlet = x.first;
+            ret.insert(c);
+        }
+    }
+    BOOST_FOREACH(DFNodeOutboundConnections::value_type x, outboundConnections_)
+    {
+        BOOST_FOREACH(DFNodeInlet dst, x.second)
+        {
+            DFConnection c;
+            c.src = this;
+            c.srcOutlet = x.first;
+            c.dst = dst.node;
+            c.dstInlet = dst.index;
+            ret.insert(c);
+        }
+    }
+    return ret;
+}
+
 bool DFNode::isConnected(size_t outlet, DFNode *node, size_t inlet) const
 {
     validateNode(node);
     validateOutlet(outlet);
     node->validateInlet(inlet);
-    BOOST_FOREACH(const DFNodeInlet *i, outlets_[outlet].connections)
+    BOOST_FOREACH(DFNodeInlet i, outboundConnections_.at(outlet))
     {
-        if(i->node == node && i->index == inlet) return true;
+        if(i.node == node && i.index == inlet) return true;
     }
     return false;
 }
@@ -126,8 +172,8 @@ void DFNode::connect(size_t outlet, DFNode *node, size_t inlet)
     validateOutlet(outlet);
     node->validateInlet(inlet);
     if(isConnected(outlet, node, inlet)) return;
-    outlets_[outlet].connections.push_back(&node->inlets_[inlet]);
-    node->inlets_[inlet].connections.push_back(&outlets_[outlet]);
+    outboundConnections_[outlet].insert(node->inlets_[inlet]);
+    node->inboundConnections_[inlet].insert(outlets_[outlet]);
 }
 
 void DFNode::disconnect(size_t outlet, DFNode *node, size_t inlet)
@@ -135,21 +181,19 @@ void DFNode::disconnect(size_t outlet, DFNode *node, size_t inlet)
     validateNode(node);
     validateOutlet(outlet);
     node->validateInlet(inlet);
-    DFNodeOutlet &o = outlets_[outlet];
-    std::vector<DFNodeInlet*> &conns = o.connections;
-    for(std::vector<DFNodeInlet*>::iterator it = conns.begin(); it != conns.end();)
+    std::set<DFNodeInlet> &outConns = outboundConnections_[outlet];
+    for(std::set<DFNodeInlet>::iterator it = outConns.begin(); it != outConns.end();)
     {
-        if((*it)->node == node && (*it)->index == inlet)
-            it = conns.erase(it);
+        if(it->node == node && it->index == inlet)
+            outConns.erase(it++);
         else
             ++it;
     }
-    DFNodeInlet &i = node->inlets_[inlet];
-    std::vector<DFNodeOutlet*> &conns2 = i.connections;
-    for(std::vector<DFNodeOutlet*>::iterator it = conns2.begin(); it != conns2.end();)
+    std::set<DFNodeOutlet> &inConns = inboundConnections_[inlet];
+    for(std::set<DFNodeOutlet>::iterator it = inConns.begin(); it != inConns.end();)
     {
-        if((*it)->node == this && (*it)->index == outlet)
-            it = conns2.erase(it);
+        if(it->node == this && it->index == outlet)
+            inConns.erase(it++);
         else
             ++it;
     }
@@ -212,9 +256,9 @@ void DFNode::onDataReceived(size_t inlet, DFData *data)
 void DFNode::sendData(size_t outlet, DFData *data)
 {
     validateOutlet(outlet);
-    BOOST_FOREACH(const DFNodeInlet *o, outlets_[outlet].connections)
+    BOOST_FOREACH(DFNodeInlet o, outboundConnections_[outlet])
     {
-        o->node->onDataReceived(o->index, data);
+        o.node->onDataReceived(o.index, data);
     }
 }
 

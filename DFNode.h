@@ -34,6 +34,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <set>
 #include <map>
 #include <stdexcept>
 #include <boost/foreach.hpp>
@@ -43,27 +44,38 @@ class DFNode;
 class DFData;
 struct DFNodeInlet;
 struct DFNodeOutlet;
+struct DFConnection;
 
 struct DFNodeIOlet
 {
     DFNode *node;
     size_t index;
 
-    bool operator<(const DFNodeIOlet &o);
+    bool operator<(const DFNodeIOlet &o) const;
 };
 
 struct DFNodeInlet : public DFNodeIOlet
 {
-    std::vector<DFNodeOutlet*> connections;
 };
 
 struct DFNodeOutlet : public DFNodeIOlet
 {
-    std::vector<DFNodeInlet*> connections;
+};
+
+struct DFConnection
+{
+    DFNode *src;
+    size_t srcOutlet;
+    DFNode *dst;
+    size_t dstInlet;
+
+    bool operator<(const DFConnection &o) const;
 };
 
 typedef size_t DFNodeID;
 typedef std::map<DFNodeID, DFNode*> DFNodeIDMap;
+typedef std::map<size_t, std::set<DFNodeOutlet> > DFNodeInboundConnections;
+typedef std::map<size_t, std::set<DFNodeInlet> > DFNodeOutboundConnections;
 
 class DFNode
 {
@@ -75,6 +87,8 @@ private:
     std::string text_;
     std::vector<DFNodeInlet> inlets_;
     std::vector<DFNodeOutlet> outlets_;
+    DFNodeInboundConnections inboundConnections_;
+    DFNodeOutboundConnections outboundConnections_;
 
     template<typename T>
     void setNumIOlets(std::vector<T> &v, size_t n)
@@ -112,6 +126,9 @@ public:
     size_t inletCount() const;
     DFNodeOutlet outlet(size_t i) const;
     size_t outletCount() const;
+    std::set<DFNodeOutlet> inboundConnections(size_t inlet) const;
+    std::set<DFNodeInlet> outboundConnections(size_t outlet) const;
+    std::set<DFConnection> connections();
     bool isConnected(size_t outlet, DFNode *node, size_t inlet) const;
     void connect(size_t outlet, DFNode *node, size_t inlet);
     void disconnect(size_t outlet, DFNode *node, size_t inlet);

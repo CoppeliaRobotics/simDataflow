@@ -110,19 +110,15 @@ void getNodes(SScriptCallBack *p, const char *cmd, getNodes_in *in, getNodes_out
 void getConnections(SScriptCallBack *p, const char *cmd, getConnections_in *in, getConnections_out *out)
 {
     out->numConnections = 0;
-    BOOST_FOREACH(const DFNode *node, DFNode::nodes())
+    BOOST_FOREACH(DFNode *node, DFNode::nodes())
     {
-        DFNodeID srcNodeId = node->id();
-        for(size_t outletIdx = 0; outletIdx < node->outletCount(); outletIdx++)
+        BOOST_FOREACH(DFConnection c, node->connections())
         {
-            BOOST_FOREACH(const DFNodeInlet *inlet, node->outlet(outletIdx).connections)
-            {
-                out->numConnections++;
-                out->srcNodeIds.push_back(srcNodeId);
-                out->srcOutlets.push_back(outletIdx);
-                out->dstNodeIds.push_back(inlet->node->id());
-                out->dstInlets .push_back(inlet->index);
-            }
+            out->numConnections++;
+            out->srcNodeIds.push_back(c.src->id());
+            out->srcOutlets.push_back(c.srcOutlet);
+            out->dstNodeIds.push_back(c.dst->id());
+            out->dstInlets .push_back(c.dstInlet);
         }
     }
 }

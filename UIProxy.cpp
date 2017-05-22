@@ -36,7 +36,7 @@ UIProxy::UIProxy()
 
 void UIProxy::setNodeIOlets(QDataflowModelNode *node, int inlets, int outlets)
 {
-    DBG << (void*)node << ", inlets=" << inlets << ", outlets+" << outlets << std::endl;
+    DBG << (void*)node << ", inlets=" << inlets << ", outlets=" << outlets << std::endl;
     node->setInletCount(inlets);
     node->setOutletCount(outlets);
 }
