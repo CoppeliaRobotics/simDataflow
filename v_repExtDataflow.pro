@@ -7,6 +7,7 @@ DEFINES -= UNICODE
 DEFINES += QT_COMPIL
 CONFIG += shared debug_and_release
 INCLUDEPATH += "../include"
+INCLUDEPATH += "external/QDataflowCanvas"
 INCLUDEPATH += "data-classes"
 INCLUDEPATH += "node-classes"
 
@@ -81,8 +82,14 @@ HEADERS += \
     DFData.h \
     data-classes/DFVector.h \
     DFNodeFactory.h \
+    DFEventsListener.h \
+    UIProxy.h \
+    DFWindow.h \
     plugin.h \
+    debug.h \
     v_repExtDataflow.h \
+    external/QDataflowCanvas/qdataflowcanvas.h \
+    external/QDataflowCanvas/qdataflowmodel.h \
     ../include/v_repLib.h \
     stubs.h
 
@@ -94,7 +101,13 @@ SOURCES += \
     DFData.cpp \
     data-classes/DFVector.cpp \
     DFNodeFactory.cpp \
+    DFEventsListener.cpp \
+    UIProxy.cpp \
+    DFWindow.cpp \
+    debug.cpp \
     v_repExtDataflow.cpp \
+    external/QDataflowCanvas/qdataflowcanvas.cpp \
+    external/QDataflowCanvas/qdataflowmodel.cpp \
     ../common/v_repLib.cpp \
     stubs.cpp
 
