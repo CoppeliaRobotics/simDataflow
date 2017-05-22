@@ -51,7 +51,7 @@ public slots:
     void onConnectionRemoved(QDataflowModelConnection *conn);
 
 signals:
-    void setNodeIOlets(QDataflowModelNode *node, int inlets, int outlets);
+    void setNodeInfo(QDataflowModelNode *node, std::string text, int inlets, int outlets, bool valid, bool blockSignals);
 };
 
 #endif // DFEVENTSLISTENER_H_INCLUDED

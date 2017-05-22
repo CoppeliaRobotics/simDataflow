@@ -30,14 +30,20 @@
 #include "UIProxy.h"
 #include "debug.h"
 
+#include <string>
+
 UIProxy::UIProxy()
 {
 }
 
-void UIProxy::setNodeIOlets(QDataflowModelNode *node, int inlets, int outlets)
+void UIProxy::setNodeInfo(QDataflowModelNode *node, std::string text, int inlets, int outlets, bool valid, bool blockSignals)
 {
+    bool oldBlockSignals = node->model()->blockSignals(blockSignals);
     DBG << (void*)node << ", inlets=" << inlets << ", outlets=" << outlets << std::endl;
+    node->setText(QString::fromStdString(text));
+    node->model()->blockSignals(oldBlockSignals);
     node->setInletCount(inlets);
     node->setOutletCount(outlets);
+    node->setValid(valid);
 }
 

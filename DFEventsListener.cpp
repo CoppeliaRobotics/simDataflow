@@ -50,7 +50,7 @@ DFEventsListener::DFEventsListener()
     QObject::connect(model, &QDataflowModel::nodeOutletCountChanged, this, &DFEventsListener::onNodeOutletCountChanged);
     QObject::connect(model, &QDataflowModel::connectionAdded, this, &DFEventsListener::onConnectionAdded);
     QObject::connect(model, &QDataflowModel::connectionRemoved, this, &DFEventsListener::onConnectionRemoved);
-    QObject::connect(this, &DFEventsListener::setNodeIOlets, uiProxy, &UIProxy::setNodeIOlets);
+    QObject::connect(this, &DFEventsListener::setNodeInfo, uiProxy, &UIProxy::setNodeInfo);
 }
 
 void DFEventsListener::onNodeAdded(QDataflowModelNode *node)
@@ -93,6 +93,7 @@ void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
     if(node->property("DFNode").isValid())
     {
         DFNode *dfnode = (DFNode*)node->property("DFNode").value<void*>();
+        if(dfnode->str() == node->text().toStdString()) return;
         oldnode = dfnode;
         oldconns = oldnode->connections();
         node->setProperty("DFNode", QVariant());
@@ -104,10 +105,22 @@ void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
     if(node->text() == "") return;
 
     std::string cmd = node->text().toStdString();
-    DFNode *dfnode = nodeFactory.create(cmd);
+    DFNode *dfnode = 0L;
+    try
+    {
+        dfnode = nodeFactory.create(cmd);
+    }
+    catch(std::runtime_error &ex)
+    {
+        std::stringstream ss;
+        ss << "Dataflow: object creation error: " << ex.what();
+        simAddStatusbarMessage(ss.str().c_str());
+        emit setNodeInfo(node, node->text().toStdString(), 0, 0, false, true);
+        return;
+    }
     DBG << "created DFNode " << dfnode->id() << std::endl;
     node->setProperty("DFNode", qVariantFromValue((void*)dfnode));
-    emit setNodeIOlets(node, dfnode->inletCount(), dfnode->outletCount());
+    emit setNodeInfo(node, dfnode->str(), dfnode->inletCount(), dfnode->outletCount(), true, false);
 
     // restore connections:
     BOOST_FOREACH(DFConnection c, oldconns)

@@ -39,7 +39,7 @@ class UIProxy : public QObject
 public:
     UIProxy();
 
-    void setNodeIOlets(QDataflowModelNode *node, int inlets, int outlets);
+    void setNodeInfo(QDataflowModelNode *node, std::string text, int inlets, int outlets, bool valid, bool blockSignals);
 };
 
 #endif // UIPROXY_H_INCLUDED
