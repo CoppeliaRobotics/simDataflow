@@ -30,9 +30,15 @@
 #include "DFNode.h"
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
+#include <utility>
 
 DFNodeIDMap DFNode::byId_;
 DFNodeID DFNode::nextNodeId_ = 0;
+
+bool DFNodeIOlet::operator<(const DFNodeIOlet &o)
+{
+    return std::make_pair(node, index) < std::make_pair(o.node, o.index);
+}
 
 void DFNode::validateInlet(size_t i) const
 {

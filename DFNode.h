@@ -48,6 +48,8 @@ struct DFNodeIOlet
 {
     DFNode *node;
     size_t index;
+
+    bool operator<(const DFNodeIOlet &o);
 };
 
 struct DFNodeInlet : public DFNodeIOlet
