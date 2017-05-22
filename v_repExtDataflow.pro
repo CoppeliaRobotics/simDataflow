@@ -9,6 +9,7 @@ CONFIG += shared debug_and_release
 INCLUDEPATH += "../include"
 INCLUDEPATH += "external/QDataflowCanvas"
 INCLUDEPATH += "external"
+INCLUDEPATH += "generated"
 INCLUDEPATH += "data-classes"
 INCLUDEPATH += "node-classes"
 
@@ -54,26 +55,32 @@ unix:!symbian {
     INSTALLS += target
 }
 
-stubs_h.target = stubs.h
-stubs_h.output = stubs.h
-stubs_h.input = callbacks.xml
-stubs_h.commands = python \"$$PWD/external/v_repStubsGen/main.py\" -H stubs.h callbacks.xml
+generated.target = $$PWD/generated
+generated.output = $$PWD/generated
+generated.commands = $(MKDIR) $$PWD/generated
+QMAKE_EXTRA_TARGETS += generated
+PRE_TARGETDEPS += $$PWD/generated
+
+stubs_h.target = generated/stubs.h
+stubs_h.output = generated/stubs.h
+stubs_h.input = callbacks.xml $$PWD/generated
+stubs_h.commands = python \"$$PWD/external/v_repStubsGen/main.py\" -H generated/stubs.h callbacks.xml
 QMAKE_EXTRA_TARGETS += stubs_h
-PRE_TARGETDEPS += stubs.h
+PRE_TARGETDEPS += generated/stubs.h
 
-stubs_cpp.target = stubs.cpp
-stubs_cpp.output = stubs.cpp
-stubs_cpp.input = callbacks.xml
-stubs_cpp.commands = python \"$$PWD/external/v_repStubsGen/main.py\" -C stubs.cpp callbacks.xml
+stubs_cpp.target = generated/stubs.cpp
+stubs_cpp.output = generated/stubs.cpp
+stubs_cpp.input = callbacks.xml $$PWD/generated
+stubs_cpp.commands = python \"$$PWD/external/v_repStubsGen/main.py\" -C generated/stubs.cpp callbacks.xml
 QMAKE_EXTRA_TARGETS += stubs_cpp
-PRE_TARGETDEPS += stubs.cpp
+PRE_TARGETDEPS += generated/stubs.cpp
 
-reference_html.target = reference.html
-reference_html.output = reference.html
-reference_html.input = callbacks.xml
-reference_html.commands = xsltproc --path \"$$PWD/\" -o reference.html \"$$PWD/external/v_repStubsGen/xsl/reference.xsl\" callbacks.xml
+reference_html.target = generated/reference.html
+reference_html.output = generated/reference.html
+reference_html.input = callbacks.xml $$PWD/generated
+reference_html.commands = xsltproc --path \"$$PWD/\" -o \"$$PWD/generated/reference.html\" \"$$PWD/external/v_repStubsGen/xsl/reference.xsl\" callbacks.xml
 QMAKE_EXTRA_TARGETS += reference_html
-PRE_TARGETDEPS += reference.html
+PRE_TARGETDEPS += generated/reference.html
 
 HEADERS += \
     DFNode.h \
@@ -93,7 +100,7 @@ HEADERS += \
     external/QDataflowCanvas/qdataflowcanvas.h \
     external/QDataflowCanvas/qdataflowmodel.h \
     ../include/v_repLib.h \
-    stubs.h
+    generated/stubs.h
 
 SOURCES += \
     DFNode.cpp \
@@ -112,6 +119,6 @@ SOURCES += \
     external/QDataflowCanvas/qdataflowcanvas.cpp \
     external/QDataflowCanvas/qdataflowmodel.cpp \
     ../common/v_repLib.cpp \
-    stubs.cpp
+    generated/stubs.cpp
 
 
