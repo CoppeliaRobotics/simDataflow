@@ -41,11 +41,14 @@
 
 class DFNode;
 class DFData;
+struct DFNodeInlet;
+struct DFNodeOutlet;
 
 struct DFNodeInlet
 {
     DFNode *node;
     size_t index;
+    std::vector<DFNodeOutlet*> connections;
 };
 
 struct DFNodeOutlet

@@ -121,6 +121,7 @@ void DFNode::connect(size_t outlet, DFNode *node, size_t inlet)
     node->validateInlet(inlet);
     if(isConnected(outlet, node, inlet)) return;
     outlets_[outlet].connections.push_back(&node->inlets_[inlet]);
+    node->inlets_[inlet].connections.push_back(&outlets_[outlet]);
 }
 
 void DFNode::disconnect(size_t outlet, DFNode *node, size_t inlet)
@@ -134,6 +135,15 @@ void DFNode::disconnect(size_t outlet, DFNode *node, size_t inlet)
     {
         if((*it)->node == node && (*it)->index == inlet)
             it = conns.erase(it);
+        else
+            ++it;
+    }
+    DFNodeInlet &i = node->inlets_[inlet];
+    std::vector<DFNodeOutlet*> &conns2 = i.connections;
+    for(std::vector<DFNodeOutlet*>::iterator it = conns2.begin(); it != conns2.end();)
+    {
+        if((*it)->node == this && (*it)->index == outlet)
+            it = conns2.erase(it);
         else
             ++it;
     }
