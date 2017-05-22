@@ -63,6 +63,14 @@ DFNode * DFNodeFactory::create(const std::vector<std::string> &args)
     return it->second(args);
 }
 
+std::vector<std::string> DFNodeFactory::classNames()
+{
+    std::vector<std::string> ret;
+    for(std::map<std::string, PCreateFunc>::const_iterator it = createFuncs_.begin(); it != createFuncs_.end(); ++it)
+        ret.push_back(it->first);
+    return ret;
+}
+
 void initNodeFactory()
 {
     std::cout << PLUGIN_NAME << ": initializing node factory" << std::endl;

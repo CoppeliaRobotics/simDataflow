@@ -35,10 +35,12 @@
 #include <QVBoxLayout>
 #include "qdataflowcanvas.h"
 
-class DFWindow : public QMainWindow
+class DFWindow : public QMainWindow, public QDataflowTextCompletion
 {
 public:
     DFWindow(QWidget *parent);
+
+    void complete(QString txt, QStringList &completionList);
 
     QDataflowCanvas *canvas;
 };

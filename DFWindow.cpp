@@ -28,11 +28,15 @@
 // -------------------------------------------------------------------
 
 #include "DFWindow.h"
+#include "DFNodeFactory.h"
+
+#include <boost/foreach.hpp>
 
 DFWindow::DFWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     canvas = new QDataflowCanvas(this);
+    canvas->setCompletion(this);
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(canvas);
@@ -41,5 +45,15 @@ DFWindow::DFWindow(QWidget *parent)
     window->setLayout(layout);
 
     setCentralWidget(window);
+}
+
+void DFWindow::complete(QString txt, QStringList &completionList)
+{
+    BOOST_FOREACH(const std::string &className, nodeFactory.classNames())
+    {
+        QString className_ = QString::fromStdString(className);
+        if(className_.startsWith(txt))
+            completionList << className_;
+    }
 }
 

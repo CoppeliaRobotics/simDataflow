@@ -51,6 +51,8 @@ public:
 
     inline size_t size() {return createFuncs_.size();}
 
+    std::vector<std::string> classNames();
+
 private:
     template<typename T>
     static DFNode * createFunc(const std::vector<std::string> &args)
