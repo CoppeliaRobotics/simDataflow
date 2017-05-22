@@ -86,6 +86,8 @@ void DFEventsListener::onNodePosChanged(QDataflowModelNode *node, QPoint pos)
 void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
 {
     DBG << "node=" << (void*)node << " text='" << node->text().toStdString() << "'" << std::endl;
+
+    // backup connections:
     DFNode *oldnode = 0;
     std::set<DFConnection> oldconns;
     if(node->property("DFNode").isValid())
@@ -97,16 +99,17 @@ void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
         DBG << "removing DFNode " << dfnode->id() << std::endl;
         delete dfnode;
     }
-    if(node->text() == "")
-    {
-        return;
-    }
+
+    // ignore null node:
+    if(node->text() == "") return;
+
     std::string cmd = node->text().toStdString();
     DFNode *dfnode = nodeFactory.create(cmd);
     DBG << "created DFNode " << dfnode->id() << std::endl;
     node->setProperty("DFNode", qVariantFromValue((void*)dfnode));
     emit setNodeIOlets(node, dfnode->inletCount(), dfnode->outletCount());
-    // restore connections
+
+    // restore connections:
     BOOST_FOREACH(DFConnection c, oldconns)
     {
         DFNode *s = c.src == oldnode ? dfnode : c.src;
