@@ -91,14 +91,14 @@ void initNodeFactory()
     nodeFactory.registerClass<DFMathBinaryOperator>("-");
     nodeFactory.registerClass<DFMathBinaryOperator>("*");
     nodeFactory.registerClass<DFMathBinaryOperator>("/");
-    nodeFactory.registerClass<DFObjectPos>("objectpos");
+    nodeFactory.registerClass<DFObjectPos>("object.pos");
     nodeFactory.registerClass<DFPrint>("print");
     nodeFactory.registerClass<DFVectorMathBinaryOperator>("vec.+");
     nodeFactory.registerClass<DFVectorMathBinaryOperator>("vec.-");
     nodeFactory.registerClass<DFVectorMathBinaryOperator>("vec.*");
     nodeFactory.registerClass<DFVectorMathBinaryOperator>("vec./");
-    nodeFactory.registerClass<DFVectorPack>("pack");
-    nodeFactory.registerClass<DFVectorUnpack>("unpack");
+    nodeFactory.registerClass<DFVectorPack>("vec.pack");
+    nodeFactory.registerClass<DFVectorUnpack>("vec.unpack");
     std::cout << PLUGIN_NAME << ": initialized node factory (" << nodeFactory.size() << " classes)" << std::endl;
 }
 
