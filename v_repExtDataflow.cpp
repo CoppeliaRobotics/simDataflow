@@ -107,7 +107,15 @@ public:
             dfEventsListener = new DFEventsListener();
             initNodeFactory();
         }
-        DFNode::tickAll();
+
+        try
+        {
+            DFNode::tickAll();
+        }
+        catch(DFException &ex)
+        {
+            simSetLastError((boost::format("Dataflow:%d") % ex.node()->id()).str().c_str(), ex.what());
+        }
     }
 
     void onMenuItemSelected(int itemHandle, int itemState)
