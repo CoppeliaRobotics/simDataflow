@@ -39,6 +39,7 @@
 #include <stdexcept>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <QMutex>
 
 class DFNode;
 class DFData;
@@ -80,6 +81,7 @@ typedef std::map<size_t, std::set<DFNodeInlet> > DFNodeOutboundConnections;
 class DFNode
 {
 private:
+    static QMutex mutex;
     static DFNodeIDMap byId_;
     static DFNodeID nextNodeId_;
     DFNodeID id_;

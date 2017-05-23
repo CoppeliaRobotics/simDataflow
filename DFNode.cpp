@@ -31,7 +31,9 @@
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
 #include <utility>
+#include <QMutexLocker>
 
+QMutex DFNode::mutex(QMutex::Recursive);
 DFNodeIDMap DFNode::byId_;
 DFNodeID DFNode::nextNodeId_ = 0;
 
@@ -65,6 +67,8 @@ void DFNode::validateNode(DFNode *node) const
 DFNode::DFNode(const std::vector<std::string> &args)
     : id_(DFNode::nextNodeId_++), args_(args)
 {
+    QMutexLocker locker(&mutex);
+
     DFNode::byId_[id_] = this;
 
     std::stringstream ss;
@@ -79,6 +83,8 @@ DFNode::DFNode(const std::vector<std::string> &args)
 
 DFNode::~DFNode()
 {
+    QMutexLocker locker(&mutex);
+
     DFNode::byId_.erase(id_);
 }
 
@@ -156,6 +162,8 @@ std::set<DFConnection> DFNode::connections()
 
 size_t DFNode::connections(std::vector<DFNodeID> &srcId, std::vector<size_t> &srcOutlet, std::vector<DFNodeID> &dstId, std::vector<size_t> &dstInlet)
 {
+    QMutexLocker locker(&mutex);
+
     size_t n = 0;
     BOOST_FOREACH(DFConnection conn, connections())
     {
@@ -165,11 +173,14 @@ size_t DFNode::connections(std::vector<DFNodeID> &srcId, std::vector<size_t> &sr
         dstId.push_back(conn.dst->id());
         dstInlet.push_back(conn.dstInlet);
     }
+
     return n;
 }
 
 size_t DFNode::connections(std::vector<int> &srcId, std::vector<int> &srcOutlet, std::vector<int> &dstId, std::vector<int> &dstInlet)
 {
+    QMutexLocker locker(&mutex);
+
     size_t n = 0;
     BOOST_FOREACH(DFConnection conn, connections())
     {
@@ -179,26 +190,33 @@ size_t DFNode::connections(std::vector<int> &srcId, std::vector<int> &srcOutlet,
         dstId.push_back(conn.dst->id());
         dstInlet.push_back(conn.dstInlet);
     }
+
     return n;
 }
 
 size_t DFNode::allConnections(std::vector<DFNodeID> &srcId, std::vector<size_t> &srcOutlet, std::vector<DFNodeID> &dstId, std::vector<size_t> &dstInlet)
 {
+    QMutexLocker locker(&mutex);
+
     size_t n = 0;
     BOOST_FOREACH(DFNode *node, nodes())
     {
         n += node->connections(srcId, srcOutlet, dstId, dstInlet);
     }
+
     return n;
 }
 
 size_t DFNode::allConnections(std::vector<int> &srcId, std::vector<int> &srcOutlet, std::vector<int> &dstId, std::vector<int> &dstInlet)
 {
+    QMutexLocker locker(&mutex);
+
     size_t n = 0;
     BOOST_FOREACH(DFNode *node, nodes())
     {
         n += node->connections(srcId, srcOutlet, dstId, dstInlet);
     }
+
     return n;
 }
 
@@ -267,12 +285,16 @@ DFNode * DFNode::byId(DFNodeID id, DFNode *defaultIfNotFound)
 
 void DFNode::deleteById(DFNodeID id)
 {
+    QMutexLocker locker(&mutex);
+
     DFNode *node = DFNode::byId(id);
     delete node;
 }
 
 void DFNode::connect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet)
 {
+    QMutexLocker locker(&mutex);
+
     DFNode *srcNode = DFNode::byId(srcNodeId),
            *dstNode = DFNode::byId(dstNodeId);
     srcNode->connect(srcOutlet, dstNode, dstInlet);
@@ -280,6 +302,8 @@ void DFNode::connect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, s
 
 void DFNode::disconnect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet)
 {
+    QMutexLocker locker(&mutex);
+
     DFNode *srcNode = DFNode::byId(srcNodeId),
            *dstNode = DFNode::byId(dstNodeId);
     srcNode->disconnect(srcOutlet, dstNode, dstInlet);
@@ -287,26 +311,34 @@ void DFNode::disconnect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId
 
 std::vector<DFNodeID> DFNode::nodeIds()
 {
+    QMutexLocker locker(&mutex);
+
     std::vector<DFNodeID> ret;
     BOOST_FOREACH(const DFNodeIDMap::value_type &i, DFNode::byId_)
     {
         ret.push_back(i.first);
     }
+
     return ret;
 }
 
 std::vector<DFNode*> DFNode::nodes()
 {
+    QMutexLocker locker(&mutex);
+
     std::vector<DFNode*> ret;
     BOOST_FOREACH(const DFNodeIDMap::value_type &i, DFNode::byId_)
     {
         ret.push_back(i.second);
     }
+
     return ret;
 }
 
 void DFNode::getInfo(DFNodeID id, std::string &cmd, int &inletCount, int &outletCount, int &x, int &y)
 {
+    QMutexLocker locker(&mutex);
+
     DFNode *node = DFNode::byId(id);
     cmd = node->str();
     inletCount = node->inletCount();
@@ -321,6 +353,8 @@ void DFNode::tick()
 
 void DFNode::tickAll()
 {
+    QMutexLocker locker(&mutex);
+
     BOOST_FOREACH(DFNodeIDMap::value_type &i, DFNode::byId_)
     {
         i.second->tick();
@@ -329,11 +363,15 @@ void DFNode::tickAll()
 
 void DFNode::setNumInlets(size_t n)
 {
+    QMutexLocker locker(&mutex);
+
     setNumIOlets(inlets_, n);
 }
 
 void DFNode::setNumOutlets(size_t n)
 {
+    QMutexLocker locker(&mutex);
+
     setNumIOlets(outlets_, n);
 }
 
@@ -343,6 +381,8 @@ void DFNode::onDataReceived(size_t inlet, DFData *data)
 
 void DFNode::sendData(size_t outlet, DFData *data)
 {
+    QMutexLocker locker(&mutex);
+
     validateOutlet(outlet);
     BOOST_FOREACH(DFNodeInlet o, outboundConnections_[outlet])
     {
