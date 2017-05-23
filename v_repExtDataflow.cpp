@@ -52,8 +52,7 @@ void add(SScriptCallBack *p, const char *cmd, add_in *in, add_out *out)
 
 void remove(SScriptCallBack *p, const char *cmd, remove_in *in, remove_out *out)
 {
-    DFNode *node = DFNode::byId(in->nodeId);
-    delete node;
+    DFNode::deleteById(in->nodeId);
 }
 
 void connect(SScriptCallBack *p, const char *cmd, connect_in *in, connect_out *out)

@@ -217,6 +217,12 @@ DFNode * DFNode::byId(DFNodeID id, DFNode *defaultIfNotFound)
     return it != DFNode::byId_.end() ? it->second : defaultIfNotFound;
 }
 
+void DFNode::deleteById(DFNodeID id)
+{
+    DFNode *node = DFNode::byId(id);
+    delete node;
+}
+
 std::vector<DFNode*> DFNode::nodes()
 {
     std::vector<DFNode*> ret;
