@@ -154,6 +154,54 @@ std::set<DFConnection> DFNode::connections()
     return ret;
 }
 
+size_t DFNode::connections(std::vector<DFNodeID> &srcId, std::vector<size_t> &srcOutlet, std::vector<DFNodeID> &dstId, std::vector<size_t> &dstInlet)
+{
+    size_t n = 0;
+    BOOST_FOREACH(DFConnection conn, connections())
+    {
+        n++;
+        srcId.push_back(conn.src->id());
+        srcOutlet.push_back(conn.srcOutlet);
+        dstId.push_back(conn.dst->id());
+        dstInlet.push_back(conn.dstInlet);
+    }
+    return n;
+}
+
+size_t DFNode::connections(std::vector<int> &srcId, std::vector<int> &srcOutlet, std::vector<int> &dstId, std::vector<int> &dstInlet)
+{
+    size_t n = 0;
+    BOOST_FOREACH(DFConnection conn, connections())
+    {
+        n++;
+        srcId.push_back(conn.src->id());
+        srcOutlet.push_back(conn.srcOutlet);
+        dstId.push_back(conn.dst->id());
+        dstInlet.push_back(conn.dstInlet);
+    }
+    return n;
+}
+
+size_t DFNode::allConnections(std::vector<DFNodeID> &srcId, std::vector<size_t> &srcOutlet, std::vector<DFNodeID> &dstId, std::vector<size_t> &dstInlet)
+{
+    size_t n = 0;
+    BOOST_FOREACH(DFNode *node, nodes())
+    {
+        n += node->connections(srcId, srcOutlet, dstId, dstInlet);
+    }
+    return n;
+}
+
+size_t DFNode::allConnections(std::vector<int> &srcId, std::vector<int> &srcOutlet, std::vector<int> &dstId, std::vector<int> &dstInlet)
+{
+    size_t n = 0;
+    BOOST_FOREACH(DFNode *node, nodes())
+    {
+        n += node->connections(srcId, srcOutlet, dstId, dstInlet);
+    }
+    return n;
+}
+
 bool DFNode::isConnected(size_t outlet, DFNode *node, size_t inlet) const
 {
     validateNode(node);
@@ -235,6 +283,16 @@ void DFNode::disconnect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId
     DFNode *srcNode = DFNode::byId(srcNodeId),
            *dstNode = DFNode::byId(dstNodeId);
     srcNode->disconnect(srcOutlet, dstNode, dstInlet);
+}
+
+std::vector<DFNodeID> DFNode::nodeIds()
+{
+    std::vector<DFNodeID> ret;
+    BOOST_FOREACH(const DFNodeIDMap::value_type &i, DFNode::byId_)
+    {
+        ret.push_back(i.first);
+    }
+    return ret;
 }
 
 std::vector<DFNode*> DFNode::nodes()

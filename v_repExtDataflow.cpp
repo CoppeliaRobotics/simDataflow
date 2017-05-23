@@ -67,26 +67,15 @@ void disconnect(SScriptCallBack *p, const char *cmd, disconnect_in *in, disconne
 
 void getNodes(SScriptCallBack *p, const char *cmd, getNodes_in *in, getNodes_out *out)
 {
-    BOOST_FOREACH(const DFNode *node, DFNode::nodes())
+    BOOST_FOREACH(const DFNodeID id, DFNode::nodeIds())
     {
-        out->nodeIds.push_back(node->id());
+        out->nodeIds.push_back(id);
     }
 }
 
 void getConnections(SScriptCallBack *p, const char *cmd, getConnections_in *in, getConnections_out *out)
 {
-    out->numConnections = 0;
-    BOOST_FOREACH(DFNode *node, DFNode::nodes())
-    {
-        BOOST_FOREACH(DFConnection c, node->connections())
-        {
-            out->numConnections++;
-            out->srcNodeIds.push_back(c.src->id());
-            out->srcOutlets.push_back(c.srcOutlet);
-            out->dstNodeIds.push_back(c.dst->id());
-            out->dstInlets .push_back(c.dstInlet);
-        }
-    }
+    out->numConnections = DFNode::allConnections(out->srcNodeIds, out->srcOutlets, out->dstNodeIds, out->dstInlets);
 }
 
 void getNodeInfo(SScriptCallBack *p, const char *cmd, getNodeInfo_in *in, getNodeInfo_out *out)

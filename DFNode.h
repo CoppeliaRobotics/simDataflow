@@ -129,6 +129,10 @@ public:
     std::set<DFNodeOutlet> inboundConnections(size_t inlet) const;
     std::set<DFNodeInlet> outboundConnections(size_t outlet) const;
     std::set<DFConnection> connections();
+    size_t connections(std::vector<DFNodeID> &srcId, std::vector<size_t> &srcOutlet, std::vector<DFNodeID> &dstId, std::vector<size_t> &dstInlet);
+    size_t connections(std::vector<int> &srcId, std::vector<int> &srcOutlet, std::vector<int> &dstId, std::vector<int> &dstInlet);
+    static size_t allConnections(std::vector<DFNodeID> &srcId, std::vector<size_t> &srcOutlet, std::vector<DFNodeID> &dstId, std::vector<size_t> &dstInlet);
+    static size_t allConnections(std::vector<int> &srcId, std::vector<int> &srcOutlet, std::vector<int> &dstId, std::vector<int> &dstInlet);
     bool isConnected(size_t outlet, DFNode *node, size_t inlet) const;
     void connect(size_t outlet, DFNode *node, size_t inlet);
     void disconnect(size_t outlet, DFNode *node, size_t inlet);
@@ -137,6 +141,7 @@ public:
     static void deleteById(DFNodeID id);
     static void connect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet);
     static void disconnect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet);
+    static std::vector<DFNodeID> nodeIds();
     static std::vector<DFNode*> nodes();
     virtual void tick();
     static void tickAll();
