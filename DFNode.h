@@ -91,8 +91,6 @@ private:
 
 typedef size_t DFNodeID;
 typedef std::map<DFNodeID, DFNode*> DFNodeIDMap;
-typedef std::map<size_t, std::set<DFNodeOutlet> > DFNodeInboundConnections;
-typedef std::map<size_t, std::set<DFNodeInlet> > DFNodeOutboundConnections;
 
 class DFNode
 {
@@ -105,8 +103,8 @@ private:
     std::string text_;
     std::vector<DFNodeInlet> inlets_;
     std::vector<DFNodeOutlet> outlets_;
-    DFNodeInboundConnections inboundConnections_;
-    DFNodeOutboundConnections outboundConnections_;
+    std::vector< std::set<DFNodeOutlet> > inboundConnections_;
+    std::vector< std::set<DFNodeInlet> > outboundConnections_;
 
     template<typename T>
     void setNumIOlets(std::vector<T> &v, size_t n)
@@ -150,6 +148,8 @@ public:
     bool isConnected(size_t outlet, DFNode *node, size_t inlet) const;
     void connect(size_t outlet, DFNode *node, size_t inlet);
     void disconnect(size_t outlet, DFNode *node, size_t inlet);
+    void disconnectInlet(size_t inlet);
+    void disconnectOutlet(size_t outlet);
     static DFNode * byId(DFNodeID id);
     static DFNode * byId(DFNodeID id, DFNode *defaultIfNotFound);
     static void deleteById(DFNodeID id);

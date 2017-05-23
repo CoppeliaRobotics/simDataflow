@@ -104,6 +104,12 @@ DFNode::~DFNode()
 {
     QMutexLocker locker(&mutex);
 
+    for(size_t inlet = 0; inlet < inletCount(); inlet++)
+        disconnectInlet(inlet);
+
+    for(size_t outlet = 0; outlet < outletCount(); outlet++)
+        disconnectOutlet(outlet);
+
     DFNode::byId_.erase(id_);
 }
 
@@ -141,36 +147,36 @@ size_t DFNode::outletCount() const
 
 std::set<DFNodeOutlet> DFNode::inboundConnections(size_t inlet) const
 {
-    return inboundConnections_.at(inlet);
+    return inboundConnections_[inlet];
 }
 
 std::set<DFNodeInlet> DFNode::outboundConnections(size_t outlet) const
 {
-    return outboundConnections_.at(outlet);
+    return outboundConnections_[outlet];
 }
 
 std::set<DFConnection> DFNode::connections()
 {
     std::set<DFConnection> ret;
-    BOOST_FOREACH(DFNodeInboundConnections::value_type x, inboundConnections_)
+    for(size_t inlet = 0; inlet < inletCount(); inlet++)
     {
-        BOOST_FOREACH(DFNodeOutlet src, x.second)
+        BOOST_FOREACH(const DFNodeOutlet &src, inboundConnections_[inlet])
         {
             DFConnection c;
             c.src = src.node;
             c.srcOutlet = src.index;
             c.dst = this;
-            c.dstInlet = x.first;
+            c.dstInlet = inlet;
             ret.insert(c);
         }
     }
-    BOOST_FOREACH(DFNodeOutboundConnections::value_type x, outboundConnections_)
+    for(size_t outlet = 0; outlet < outletCount(); outlet++)
     {
-        BOOST_FOREACH(DFNodeInlet dst, x.second)
+        BOOST_FOREACH(const DFNodeInlet &dst, outboundConnections_[outlet])
         {
             DFConnection c;
             c.src = this;
-            c.srcOutlet = x.first;
+            c.srcOutlet = outlet;
             c.dst = dst.node;
             c.dstInlet = dst.index;
             ret.insert(c);
@@ -244,7 +250,7 @@ bool DFNode::isConnected(size_t outlet, DFNode *node, size_t inlet) const
     validateNode(node);
     validateOutlet(outlet);
     node->validateInlet(inlet);
-    BOOST_FOREACH(DFNodeInlet i, outboundConnections_.at(outlet))
+    BOOST_FOREACH(DFNodeInlet i, outboundConnections_[outlet])
     {
         if(i.node == node && i.index == inlet) return true;
     }
@@ -281,6 +287,22 @@ void DFNode::disconnect(size_t outlet, DFNode *node, size_t inlet)
             inConns.erase(it++);
         else
             ++it;
+    }
+}
+
+void DFNode::disconnectInlet(size_t inlet)
+{
+    BOOST_FOREACH(const DFNodeOutlet &x, inboundConnections_[inlet])
+    {
+        x.node->disconnect(x.index, this, inlet);
+    }
+}
+
+void DFNode::disconnectOutlet(size_t outlet)
+{
+    BOOST_FOREACH(const DFNodeInlet &x, outboundConnections_[outlet])
+    {
+        this->disconnect(outlet, x.node, x.index);
     }
 }
 
@@ -380,14 +402,24 @@ void DFNode::setNumInlets(size_t n)
 {
     QMutexLocker locker(&mutex);
 
+    size_t oldN = inletCount();
+    for(size_t inlet = n; inlet < oldN; inlet++)
+        disconnectInlet(inlet);
+
     setNumIOlets(inlets_, n);
+    inboundConnections_.resize(n);
 }
 
 void DFNode::setNumOutlets(size_t n)
 {
     QMutexLocker locker(&mutex);
 
+    size_t oldN = outletCount();
+    for(size_t outlet = n; outlet < oldN; outlet++)
+        disconnectOutlet(outlet);
+
     setNumIOlets(outlets_, n);
+    outboundConnections_.resize(n);
 }
 
 void DFNode::onDataReceived(size_t inlet, DFData *data)
