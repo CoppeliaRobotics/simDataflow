@@ -55,53 +55,12 @@ unix:!symbian {
     INSTALLS += target
 }
 
-generated.target = $$PWD/generated
-generated.output = $$PWD/generated
-generated.commands = $(MKDIR) $$PWD/generated
-QMAKE_EXTRA_TARGETS += generated
-PRE_TARGETDEPS += $$PWD/generated
-
-stubs_h.target = generated/stubs.h
-stubs_h.output = generated/stubs.h
-stubs_h.input = callbacks.xml $$PWD/generated
-stubs_h.commands = python \"$$PWD/external/v_repStubsGen/main.py\" -H generated/stubs.h callbacks.xml
-QMAKE_EXTRA_TARGETS += stubs_h
+gen_all.target = generated/stubs.h
+gen_all.output = generated/stubs.h
+gen_all.input = callbacks.xml simExtCustomUI.lua
+gen_all.commands = python \"$$PWD/external/v_repStubsGen/generate.py\" --xml-file \"$$PWD/callbacks.xml\" --lua-file \"$$PWD/simExtDataflow.lua\" --gen-all \"$$PWD/generated/\"
+QMAKE_EXTRA_TARGETS += gen_all
 PRE_TARGETDEPS += generated/stubs.h
-
-stubs_cpp.target = generated/stubs.cpp
-stubs_cpp.output = generated/stubs.cpp
-stubs_cpp.input = callbacks.xml $$PWD/generated
-stubs_cpp.commands = python \"$$PWD/external/v_repStubsGen/main.py\" -C generated/stubs.cpp callbacks.xml
-QMAKE_EXTRA_TARGETS += stubs_cpp
-PRE_TARGETDEPS += generated/stubs.cpp
-
-lua_xml.target = generated/lua.xml
-lua_xml.output = generated/lua.xml
-lua_xml.input = simExtDataflow.lua
-lua_xml.commands = python \"$$PWD/external/v_repStubsGen/lua_to_xml.py\" simExtDataflow.lua generated/lua.xml
-QMAKE_EXTRA_TARGETS += lua_xml
-PRE_TARGETDEPS += generated/lua.xml
-
-reference_xml.target = generated/reference.xml
-reference_xml.output = generated/reference.xml
-reference_xml.input = callbacks.xml generated/lua.xml
-reference_xml.commands = python \"$$PWD/external/v_repStubsGen/merge_xml.py\" callbacks.xml generated/lua.xml generated/reference.xml
-QMAKE_EXTRA_TARGETS += reference_xml
-PRE_TARGETDEPS += generated/reference.xml
-
-reference_html.target = generated/reference.html
-reference_html.output = generated/reference.html
-reference_html.input = generated/reference.xml
-reference_html.commands = xsltproc --path \"$$PWD/\" -o generated/reference.html \"$$PWD/external/v_repStubsGen/xsl/reference.xsl\" generated/reference.xml
-QMAKE_EXTRA_TARGETS += reference_html
-PRE_TARGETDEPS += generated/reference.html
-
-lua_calltips_cpp.target = generated/lua_calltips.cpp
-lua_calltips_cpp.output = generated/lua_calltips.cpp
-lua_calltips_cpp.input = simExtDataflow.lua \"$$PWD/external/v_repStubsGen/generate_lua_calltips.py\"
-lua_calltips_cpp.commands = python \"$$PWD/external/v_repStubsGen/generate_lua_calltips.py\" Dataflow DF \"$$PWD/simExtDataflow.lua\" \"$$PWD/generated/lua_calltips.cpp\"
-QMAKE_EXTRA_TARGETS += lua_calltips_cpp
-PRE_TARGETDEPS += generated/lua_calltips.cpp
 
 HEADERS += \
     DFNode.h \
