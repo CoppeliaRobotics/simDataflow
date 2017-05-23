@@ -305,6 +305,16 @@ std::vector<DFNode*> DFNode::nodes()
     return ret;
 }
 
+void DFNode::getInfo(DFNodeID id, std::string &cmd, int &inletCount, int &outletCount, int &x, int &y)
+{
+    DFNode *node = DFNode::byId(id);
+    cmd = node->str();
+    inletCount = node->inletCount();
+    outletCount = node->outletCount();
+    x = -1;
+    y = -1;
+}
+
 void DFNode::tick()
 {
 }

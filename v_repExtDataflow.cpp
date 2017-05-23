@@ -80,12 +80,7 @@ void getConnections(SScriptCallBack *p, const char *cmd, getConnections_in *in, 
 
 void getNodeInfo(SScriptCallBack *p, const char *cmd, getNodeInfo_in *in, getNodeInfo_out *out)
 {
-    DFNode *node = DFNode::byId(in->nodeId);
-    out->cmd = node->str();
-    out->inletCount = node->inletCount();
-    out->outletCount = node->outletCount();
-    out->x = -1;
-    out->y = -1;
+    DFNode::getInfo(in->nodeId, out->cmd, out->inletCount, out->outletCount, out->x, out->y);
 }
 
 class Plugin : public vrep::Plugin

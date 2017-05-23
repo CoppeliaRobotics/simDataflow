@@ -143,6 +143,7 @@ public:
     static void disconnect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet);
     static std::vector<DFNodeID> nodeIds();
     static std::vector<DFNode*> nodes();
+    static void getInfo(DFNodeID id, std::string &cmd, int &inletCount, int &outletCount, int &x, int &y);
     virtual void tick();
     static void tickAll();
 
