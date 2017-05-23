@@ -32,6 +32,7 @@
 DFObjectPos::DFObjectPos(const std::vector<std::string> &args)
     : DFNode(args)
 {
+    setNumInlets(1);
     setNumOutlets(1);
 
     if(args.size() < 2)
@@ -39,6 +40,14 @@ DFObjectPos::DFObjectPos(const std::vector<std::string> &args)
 
     handle_ = getObjectHandle(args[1]);
     relToHandle_ = args.size() >= 3 ? getObjectHandle(args[2]) : -1;
+}
+
+void DFObjectPos::onDataReceived(size_t inlet, DFData *data)
+{
+    if(DFVector *vec = dynamic_cast<DFVector*>(data))
+    {
+        simSetObjectPosition(handle_, relToHandle_, &pos_.data[0]);
+    }
 }
 
 void DFObjectPos::tick()

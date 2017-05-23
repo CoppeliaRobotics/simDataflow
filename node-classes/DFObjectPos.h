@@ -41,6 +41,7 @@ private:
 
 public:
     DFObjectPos(const std::vector<std::string> &args);
+    void onDataReceived(size_t inlet, DFData *data);
     void tick();
 };
 
