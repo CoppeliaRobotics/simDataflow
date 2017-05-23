@@ -145,6 +145,16 @@ size_t DFNode::outletCount() const
     return outlets_.size();
 }
 
+std::string DFNode::arg(size_t i)
+{
+    return args_[i];
+}
+
+size_t DFNode::argCount()
+{
+    return args_.size();
+}
+
 std::set<DFNodeOutlet> DFNode::inboundConnections(size_t inlet) const
 {
     return inboundConnections_[inlet];

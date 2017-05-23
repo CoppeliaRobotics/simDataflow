@@ -31,6 +31,7 @@
 #include "DFMathBinaryOperator.h"
 #include "DFObjectPos.h"
 #include "DFPrint.h"
+#include "DFTrigger.h"
 #include "DFVectorMathBinaryOperator.h"
 #include "DFVectorPack.h"
 #include "DFVectorUnpack.h"
@@ -87,6 +88,7 @@ void initNodeFactory()
     nodeFactory.registerClass<DFMathBinaryOperator>("/");
     nodeFactory.registerClass<DFObjectPos>("object.pos");
     nodeFactory.registerClass<DFPrint>("print");
+    nodeFactory.registerClass<DFTrigger>("trig");
     nodeFactory.registerClass<DFVectorMathBinaryOperator>("vec.+");
     nodeFactory.registerClass<DFVectorMathBinaryOperator>("vec.-");
     nodeFactory.registerClass<DFVectorMathBinaryOperator>("vec.*");

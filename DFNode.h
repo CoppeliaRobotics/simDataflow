@@ -138,6 +138,8 @@ public:
     size_t inletCount() const;
     DFNodeOutlet outlet(size_t i) const;
     size_t outletCount() const;
+    std::string arg(size_t i);
+    size_t argCount();
     std::set<DFNodeOutlet> inboundConnections(size_t inlet) const;
     std::set<DFNodeInlet> outboundConnections(size_t outlet) const;
     std::set<DFConnection> connections();

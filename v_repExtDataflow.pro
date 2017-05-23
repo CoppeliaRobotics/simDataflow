@@ -67,6 +67,7 @@ HEADERS += \
     node-classes/DFMathBinaryOperator.h \
     node-classes/DFObjectPos.h \
     node-classes/DFPrint.h \
+    node-classes/DFTrigger.h \
     node-classes/DFVectorMathBinaryOperator.h \
     node-classes/DFVectorPack.h \
     node-classes/DFVectorUnpack.h \
@@ -93,6 +94,7 @@ SOURCES += \
     node-classes/DFMathBinaryOperator.cpp \
     node-classes/DFObjectPos.cpp \
     node-classes/DFPrint.cpp \
+    node-classes/DFTrigger.cpp \
     node-classes/DFVectorMathBinaryOperator.cpp \
     node-classes/DFVectorPack.cpp \
     node-classes/DFVectorUnpack.cpp \
