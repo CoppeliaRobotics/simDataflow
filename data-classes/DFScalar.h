@@ -43,6 +43,7 @@ public:
     DFScalar operator=(const DFScalar &o);
 
     std::string str();
+    std::string tag();
 };
 
 #endif // DFSCALAR_H_INCLUDED

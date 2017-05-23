@@ -40,3 +40,8 @@ std::string DFVector::str()
 {
     return (boost::format("{%f, %f, %f}") % data[0] % data[1] % data[2]).str();
 }
+
+std::string DFVector::tag()
+{
+    return "vector";
+}

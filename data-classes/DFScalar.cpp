@@ -39,3 +39,8 @@ std::string DFScalar::str()
 {
     return boost::lexical_cast<std::string>(data);
 }
+
+std::string DFScalar::tag()
+{
+    return "scalar";
+}

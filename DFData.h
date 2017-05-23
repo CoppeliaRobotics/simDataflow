@@ -39,6 +39,7 @@ class DFData
 {
 public:
     virtual std::string str() = 0;
+    virtual std::string tag() = 0;
 };
 
 #endif // DFDATA_H_INCLUDED

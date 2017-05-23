@@ -43,6 +43,7 @@ public:
     DFString operator=(const DFString &o);
 
     std::string str();
+    std::string tag();
 };
 
 #endif // DFSTRING_H_INCLUDED

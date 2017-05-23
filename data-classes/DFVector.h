@@ -43,6 +43,7 @@ public:
     DFVector operator=(const DFVector &o);
 
     std::string str();
+    std::string tag();
 };
 
 #endif // DFVECTOR_H_INCLUDED

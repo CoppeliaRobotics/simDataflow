@@ -39,3 +39,8 @@ std::string DFString::str()
 {
     return data;
 }
+
+std::string DFString::tag()
+{
+    return "string";
+}
