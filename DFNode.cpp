@@ -48,6 +48,25 @@ bool DFConnection::operator<(const DFConnection &o) const
         < std::make_pair(std::make_pair(o.src, o.srcOutlet), std::make_pair(o.dst, o.dstInlet));
 }
 
+DFException::DFException(DFNode *node, std::string message)
+    : std::runtime_error(message), node_(node), message_(message)
+{
+}
+
+DFException::~DFException() throw()
+{
+}
+
+const char * DFException::what() const throw()
+{
+    return message_.c_str();
+}
+
+DFNode * DFException::node() const
+{
+    return node_;
+}
+
 void DFNode::validateInlet(size_t i) const
 {
     validateIOlet(inlets_, i, "inlet");
@@ -373,6 +392,7 @@ void DFNode::setNumOutlets(size_t n)
 
 void DFNode::onDataReceived(size_t inlet, DFData *data)
 {
+    throw DFException(this, (boost::format("no method for %s on inlet %d") % data->tag() % inlet).str());
 }
 
 void DFNode::sendData(size_t outlet, DFData *data)

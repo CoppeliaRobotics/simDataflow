@@ -52,7 +52,10 @@ void DFVectorUnpack::onDataReceived(size_t inlet, DFData *data)
                 sca.data = vec->data[i];
                 sendData(i, &sca);
             }
+            return;
         }
     }
+
+    DFNode::onDataReceived(inlet, data);
 }
 

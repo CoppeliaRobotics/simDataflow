@@ -47,13 +47,19 @@ void DFVectorPack::onDataReceived(size_t inlet, DFData *data)
     if(DFScalar *sca = dynamic_cast<DFScalar*>(data))
     {
         state_.data[inlet] = sca->data;
+        if(inlet == 0) sendData(0, &state_);
+        return;
     }
-    else if(DFVector *vec = dynamic_cast<DFVector*>(data))
+    if(DFVector *vec = dynamic_cast<DFVector*>(data))
     {
         if(inlet == 0)
+        {
             state_ = *vec;
+            sendData(0, &state_);
+            return;
+        }
     }
 
-    if(inlet == 0) sendData(0, &state_);
+    DFNode::onDataReceived(inlet, data);
 }
 

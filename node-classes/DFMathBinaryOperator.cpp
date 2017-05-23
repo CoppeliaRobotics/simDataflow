@@ -38,7 +38,7 @@ DFMathBinaryOperator::DFMathBinaryOperator(const std::vector<std::string> &args)
 
     op_ = args[0];
     if(op_ != "+" && op_ != "-" && op_ != "*" && op_ != "/")
-        throw std::runtime_error(boost::format("invalid operator: %s" % op_).str());
+        throw std::runtime_error((boost::format("invalid operator: %s") % op_).str());
 
     state_.data = args.size() == 2 ? boost::lexical_cast<simFloat>(args[1]) : 0;
 }
@@ -85,5 +85,8 @@ void DFMathBinaryOperator::onDataReceived(size_t inlet, DFData *data)
         {
             state_ = *sca;
         }
+        return;
     }
+
+    DFNode::onDataReceived(inlet, data);
 }

@@ -48,7 +48,10 @@ void DFObjectPos::onDataReceived(size_t inlet, DFData *data)
     {
         pos_ = *vec;
         simSetObjectPosition(handle_, relToHandle_, &pos_.data[0]);
+        return;
     }
+
+    DFNode::onDataReceived(inlet, data);
 }
 
 void DFObjectPos::tick()

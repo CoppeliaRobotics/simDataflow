@@ -31,6 +31,7 @@
 #define DFNODE_H_INCLUDED
 
 #include "v_repLib.h"
+#include "DFData.h"
 #include <sstream>
 #include <string>
 #include <vector>
@@ -72,6 +73,20 @@ struct DFConnection
     size_t dstInlet;
 
     bool operator<(const DFConnection &o) const;
+};
+
+class DFException : public std::runtime_error
+{
+public:
+    DFException(DFNode *node, std::string message);
+    virtual ~DFException() throw();
+    virtual const char * what() const throw();
+
+    DFNode * node() const;
+
+private:
+    DFNode *node_;
+    std::string message_;
 };
 
 typedef size_t DFNodeID;

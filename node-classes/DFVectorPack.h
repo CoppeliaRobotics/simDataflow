@@ -31,6 +31,7 @@
 #define DFVECTORPACK_H_INCLUDED
 
 #include "DFNode.h"
+#include "DFBang.h"
 #include "DFScalar.h"
 #include "DFVector.h"
 

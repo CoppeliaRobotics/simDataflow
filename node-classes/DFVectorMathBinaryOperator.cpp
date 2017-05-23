@@ -94,5 +94,8 @@ void DFVectorMathBinaryOperator::onDataReceived(size_t inlet, DFData *data)
         {
             state_ = *vec;
         }
+        return;
     }
+
+    DFNode::onDataReceived(inlet, data);
 }
