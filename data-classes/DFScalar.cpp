@@ -37,7 +37,5 @@ DFScalar DFScalar::operator=(const DFScalar &o)
 
 std::string DFScalar::str()
 {
-    std::stringstream ss;
-    ss << data;
-    return ss.str();
+    return boost::lexical_cast<std::string>(data);
 }

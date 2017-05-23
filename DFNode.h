@@ -39,6 +39,7 @@
 #include <stdexcept>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
 #include <QMutex>
 
 class DFNode;
@@ -108,11 +109,7 @@ private:
     void validateIOlet(const std::vector<T> &v, size_t i, const char *n) const
     {
         if(i >= v.size())
-        {
-            std::stringstream ss;
-            ss << "invalid " << n << " index: " << i;
-            throw std::range_error(ss.str());
-        }
+            throw std::range_error((boost::format("invalid %s index: %d") % n % i).str());
     }
 
     void validateInlet(size_t i) const;

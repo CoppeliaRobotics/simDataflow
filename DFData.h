@@ -31,6 +31,9 @@
 #define DFDATA_H_INCLUDED
 
 #include <string>
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
 
 class DFData
 {

@@ -38,7 +38,5 @@ DFVector DFVector::operator=(const DFVector &o)
 
 std::string DFVector::str()
 {
-    std::stringstream ss;
-    ss << "{" << data[0] << ", " << data[1] << ", " << data[2] << "}";
-    return ss.str();
+    return (boost::format("{%f, %f, %f}") % data[0] % data[1] % data[2]).str();
 }

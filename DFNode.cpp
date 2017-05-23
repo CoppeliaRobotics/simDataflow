@@ -269,11 +269,7 @@ DFNode * DFNode::byId(DFNodeID id)
 {
     DFNodeIDMap::const_iterator it = DFNode::byId_.find(id);
     if(it == DFNode::byId_.end())
-    {
-        std::stringstream ss;
-        ss << "invalid node id: " << id;
-        throw std::range_error(ss.str());
-    }
+        throw std::range_error((boost::format("invalid node id: %d") % id).str());
     return it->second;
 }
 

@@ -35,15 +35,15 @@ DFPrint::DFPrint(const std::vector<std::string> &args)
 {
     setNumInlets(1);
 
-    if(args.size() >= 2)
+    if(args.size() == 1)
+        prefix_ = "print";
+    else if(args.size() == 2)
         prefix_ = args[1];
+    else
+        throw std::runtime_error("bad arg count");
 }
 
 void DFPrint::onDataReceived(size_t inlet, DFData *data)
 {
-    std::stringstream ss;
-    if(prefix_ != "") ss << prefix_ << ": ";
-    else ss << "print: ";
-    ss << data->str();
-    simAddStatusbarMessage(ss.str().c_str());
+    simAddStatusbarMessage((boost::format("%s: %s") % prefix_ % data->str()).str().c_str());
 }

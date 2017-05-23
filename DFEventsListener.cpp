@@ -112,9 +112,7 @@ void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
     }
     catch(std::runtime_error &ex)
     {
-        std::stringstream ss;
-        ss << "Dataflow: object creation error: " << ex.what();
-        simAddStatusbarMessage(ss.str().c_str());
+        simAddStatusbarMessage((boost::format("Dataflow: object creation error: %s") % ex.what()).str().c_str());
         emit setNodeInfo(node, node->text().toStdString(), 0, 0, false, true);
         return;
     }
