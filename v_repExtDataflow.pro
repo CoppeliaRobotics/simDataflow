@@ -71,6 +71,7 @@ HEADERS += \
     node-classes/DFVectorPack.h \
     node-classes/DFVectorUnpack.h \
     DFData.h \
+    data-classes/DFBang.h \
     data-classes/DFScalar.h \
     data-classes/DFString.h \
     data-classes/DFVector.h \
@@ -96,6 +97,7 @@ SOURCES += \
     node-classes/DFVectorPack.cpp \
     node-classes/DFVectorUnpack.cpp \
     DFData.cpp \
+    data-classes/DFBang.cpp \
     data-classes/DFScalar.cpp \
     data-classes/DFString.cpp \
     data-classes/DFVector.cpp \
