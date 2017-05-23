@@ -135,6 +135,8 @@ public:
     static DFNode * byId(DFNodeID id);
     static DFNode * byId(DFNodeID id, DFNode *defaultIfNotFound);
     static void deleteById(DFNodeID id);
+    static void connect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet);
+    static void disconnect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet);
     static std::vector<DFNode*> nodes();
     virtual void tick();
     static void tickAll();

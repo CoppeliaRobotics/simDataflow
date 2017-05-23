@@ -57,16 +57,12 @@ void remove(SScriptCallBack *p, const char *cmd, remove_in *in, remove_out *out)
 
 void connect(SScriptCallBack *p, const char *cmd, connect_in *in, connect_out *out)
 {
-    DFNode *srcNode = DFNode::byId(in->srcNodeId),
-           *dstNode = DFNode::byId(in->dstNodeId);
-    srcNode->connect(in->srcOutlet, dstNode, in->dstInlet);
+    DFNode::connect(in->srcNodeId, in->srcOutlet, in->dstNodeId, in->dstInlet);
 }
 
 void disconnect(SScriptCallBack *p, const char *cmd, disconnect_in *in, disconnect_out *out)
 {
-    DFNode *srcNode = DFNode::byId(in->srcNodeId),
-           *dstNode = DFNode::byId(in->dstNodeId);
-    srcNode->disconnect(in->srcOutlet, dstNode, in->dstInlet);
+    DFNode::disconnect(in->srcNodeId, in->srcOutlet, in->dstNodeId, in->dstInlet);
 }
 
 void getNodes(SScriptCallBack *p, const char *cmd, getNodes_in *in, getNodes_out *out)

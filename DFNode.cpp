@@ -223,6 +223,20 @@ void DFNode::deleteById(DFNodeID id)
     delete node;
 }
 
+void DFNode::connect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet)
+{
+    DFNode *srcNode = DFNode::byId(srcNodeId),
+           *dstNode = DFNode::byId(dstNodeId);
+    srcNode->connect(srcOutlet, dstNode, dstInlet);
+}
+
+void DFNode::disconnect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet)
+{
+    DFNode *srcNode = DFNode::byId(srcNodeId),
+           *dstNode = DFNode::byId(dstNodeId);
+    srcNode->disconnect(srcOutlet, dstNode, dstInlet);
+}
+
 std::vector<DFNode*> DFNode::nodes()
 {
     std::vector<DFNode*> ret;
