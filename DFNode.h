@@ -138,6 +138,8 @@ public:
     virtual void tick();
     static void tickAll();
 
+    virtual simInt getObjectHandle(const std::string &arg);
+
 protected:
     void setNumInlets(size_t n);
     void setNumOutlets(size_t n);

@@ -29,18 +29,6 @@
 
 #include "DFObjectPos.h"
 
-simInt getObjectHandle(const std::string &strArg)
-{
-    try
-    {
-        return boost::lexical_cast<simInt>(strArg);
-    }
-    catch(boost::bad_lexical_cast &ex)
-    {
-        return simGetObjectHandle(strArg.c_str());
-    }
-}
-
 DFObjectPos::DFObjectPos(const std::vector<std::string> &args)
     : DFNode(args)
 {

@@ -262,3 +262,15 @@ void DFNode::sendData(size_t outlet, DFData *data)
     }
 }
 
+simInt DFNode::getObjectHandle(const std::string &strArg)
+{
+    try
+    {
+        return boost::lexical_cast<simInt>(strArg);
+    }
+    catch(boost::bad_lexical_cast &ex)
+    {
+        return simGetObjectHandle(strArg.c_str());
+    }
+}
+
