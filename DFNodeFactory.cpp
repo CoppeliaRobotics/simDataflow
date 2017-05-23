@@ -60,7 +60,16 @@ DFNode * DFNodeFactory::create(const std::vector<std::string> &args)
         ss << "no such class: " << args[0];
         throw std::runtime_error(ss.str());
     }
-    return it->second(args);
+    try
+    {
+        return it->second(args);
+    }
+    catch(std::exception &ex)
+    {
+        std::stringstream ss;
+        ss << args[0] << ": instantiation error: " << ex.what();
+        throw std::runtime_error(ss.str());
+    }
 }
 
 std::vector<std::string> DFNodeFactory::classNames()
