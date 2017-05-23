@@ -37,6 +37,12 @@ DFMathBinaryOperator::DFMathBinaryOperator(const std::vector<std::string> &args)
     setNumOutlets(1);
 
     op_ = args[0];
+    if(op_ != "+" && op_ != "-" && op_ != "*" && op_ != "/")
+    {
+        std::stringstream ss;
+        ss << "invalid operator: " << op_;
+        throw std::runtime_error(ss.str());
+    }
 
     state_.data = args.size() == 2 ? boost::lexical_cast<simFloat>(args[1]) : 0;
 }

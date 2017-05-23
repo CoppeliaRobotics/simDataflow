@@ -36,10 +36,24 @@ DFVectorMathBinaryOperator::DFVectorMathBinaryOperator(const std::vector<std::st
     setNumInlets(2);
     setNumOutlets(1);
 
-    op_ = args[0];
+    std::string prefix = args[0].substr(0, args[0].length() - 1);
+    if(prefix != "vec.")
+    {
+        std::stringstream ss;
+        ss << "invalid node prefix: " << prefix;
+        throw std::runtime_error(ss.str());
+    }
 
-    for(size_t i = 0; i < 3; i++)
-        state_.data[i] = (i + 1) < args.size() ? boost::lexical_cast<double>(args[i + 1]) : 0;
+    op_ = args[0].substr(args[0].length() - 1);
+    if(op_ != "+" && op_ != "-" && op_ != "*" && op_ != "/")
+    {
+        std::stringstream ss;
+        ss << "invalid operator: " << op_;
+        throw std::runtime_error(ss.str());
+    }
+
+    for(size_t i = 0, j = 1; i < 3 && j < args.size(); i++, j++)
+        state_.data[i] = (j < args.size()) ?  boost::lexical_cast<double>(args[j]) : 0;
 }
 
 void DFVectorMathBinaryOperator::op(DFVector &x, const DFVector &y)
