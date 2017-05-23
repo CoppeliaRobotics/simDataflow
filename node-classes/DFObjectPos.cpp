@@ -46,6 +46,7 @@ void DFObjectPos::onDataReceived(size_t inlet, DFData *data)
 {
     if(DFVector *vec = dynamic_cast<DFVector*>(data))
     {
+        pos_ = *vec;
         simSetObjectPosition(handle_, relToHandle_, &pos_.data[0]);
     }
 }
