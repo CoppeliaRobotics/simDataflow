@@ -27,28 +27,33 @@
 // Federico Ferri <federico.ferri.it at gmail dot com>
 // -------------------------------------------------------------------
 
-#ifndef DFMATHBINARYOPERATOR_H_INCLUDED
-#define DFMATHBINARYOPERATOR_H_INCLUDED
+#include "DFVectorPack.h"
 
-#include "DFNode.h"
-#include "DFScalar.h"
-
-class DFMathBinaryOperator : public DFNode
+DFVectorPack::DFVectorPack(const std::vector<std::string> &args)
+    : DFNode(args)
 {
-private:
-    DFScalar state_;
-    std::string op_;
+    setNumInlets(3);
+    setNumOutlets(1);
 
-public:
-    DFMathBinaryOperator(const std::vector<std::string> &args);
-    void onDataReceived(size_t inlet, DFData *data);
+    if(args.size() != 1 && args.size() != 4)
+        throw std::runtime_error("bad arg count");
 
-protected:
-    void op(DFScalar &x, const DFScalar &y);
-    void add(DFScalar &x, const DFScalar &y);
-    void mul(DFScalar &x, const DFScalar &y);
-    void sub(DFScalar &x, const DFScalar &y);
-    void div(DFScalar &x, const DFScalar &y);
-};
+    for(int i = 0; i < 3; i++)
+        state_.data[i] = (i + 1) < args.size() ? boost::lexical_cast<simInt>(args[i + 1]) : 0;
+}
 
-#endif // DFMATHBINARYOPERATOR_H_INCLUDED
+void DFVectorPack::onDataReceived(size_t inlet, DFData *data)
+{
+    if(DFScalar *sca = dynamic_cast<DFScalar*>(data))
+    {
+        state_.data[inlet] = sca->data;
+    }
+    else if(DFVector *vec = dynamic_cast<DFVector*>(data))
+    {
+        if(inlet == 0)
+            state_ = *vec;
+    }
+
+    if(inlet == 0) sendData(0, &state_);
+}
+

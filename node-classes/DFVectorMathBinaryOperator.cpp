@@ -27,28 +27,66 @@
 // Federico Ferri <federico.ferri.it at gmail dot com>
 // -------------------------------------------------------------------
 
-#ifndef DFMATHBINARYOPERATOR_H_INCLUDED
-#define DFMATHBINARYOPERATOR_H_INCLUDED
+#include "DFVectorMathBinaryOperator.h"
+#include "DFData.h"
 
-#include "DFNode.h"
-#include "DFScalar.h"
-
-class DFMathBinaryOperator : public DFNode
+DFVectorMathBinaryOperator::DFVectorMathBinaryOperator(const std::vector<std::string> &args)
+    : DFNode(args)
 {
-private:
-    DFScalar state_;
-    std::string op_;
+    setNumInlets(2);
+    setNumOutlets(1);
 
-public:
-    DFMathBinaryOperator(const std::vector<std::string> &args);
-    void onDataReceived(size_t inlet, DFData *data);
+    op_ = args[0];
 
-protected:
-    void op(DFScalar &x, const DFScalar &y);
-    void add(DFScalar &x, const DFScalar &y);
-    void mul(DFScalar &x, const DFScalar &y);
-    void sub(DFScalar &x, const DFScalar &y);
-    void div(DFScalar &x, const DFScalar &y);
-};
+    for(size_t i = 0; i < 3; i++)
+        state_.data[i] = (i + 1) < args.size() ? boost::lexical_cast<double>(args[i + 1]) : 0;
+}
 
-#endif // DFMATHBINARYOPERATOR_H_INCLUDED
+void DFVectorMathBinaryOperator::op(DFVector &x, const DFVector &y)
+{
+    if(op_ == "+") add(x, y);
+    else if(op_ == "-") sub(x, y);
+    else if(op_ == "*") mul(x, y);
+    else if(op_ == "/") div(x, y);
+}
+
+void DFVectorMathBinaryOperator::add(DFVector &x, const DFVector &y)
+{
+    for(int i = 0; i < 3; i++)
+        x.data[i] += y.data[i];
+}
+
+void DFVectorMathBinaryOperator::sub(DFVector &x, const DFVector &y)
+{
+    for(int i = 0; i < 3; i++)
+        x.data[i] -= y.data[i];
+}
+
+void DFVectorMathBinaryOperator::mul(DFVector &x, const DFVector &y)
+{
+    for(int i = 0; i < 3; i++)
+        x.data[i] *= y.data[i];
+}
+
+void DFVectorMathBinaryOperator::div(DFVector &x, const DFVector &y)
+{
+    for(int i = 0; i < 3; i++)
+        x.data[i] /= y.data[i];
+}
+
+void DFVectorMathBinaryOperator::onDataReceived(size_t inlet, DFData *data)
+{
+    if(DFVector *vec = dynamic_cast<DFVector*>(data))
+    {
+        if(inlet == 0)
+        {
+            DFVector tmp = *vec;
+            op(tmp, state_);
+            sendData(0, &tmp);
+        }
+        else
+        {
+            state_ = *vec;
+        }
+    }
+}

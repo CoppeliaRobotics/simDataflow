@@ -108,7 +108,12 @@ HEADERS += \
     node-classes/DFMathBinaryOperator.h \
     node-classes/DFObjectPos.h \
     node-classes/DFPrint.h \
+    node-classes/DFVectorMathBinaryOperator.h \
+    node-classes/DFVectorPack.h \
+    node-classes/DFVectorUnpack.h \
     DFData.h \
+    data-classes/DFScalar.h \
+    data-classes/DFString.h \
     data-classes/DFVector.h \
     DFNodeFactory.h \
     DFEventsListener.h \
@@ -128,7 +133,12 @@ SOURCES += \
     node-classes/DFMathBinaryOperator.cpp \
     node-classes/DFObjectPos.cpp \
     node-classes/DFPrint.cpp \
+    node-classes/DFVectorMathBinaryOperator.cpp \
+    node-classes/DFVectorPack.cpp \
+    node-classes/DFVectorUnpack.cpp \
     DFData.cpp \
+    data-classes/DFScalar.cpp \
+    data-classes/DFString.cpp \
     data-classes/DFVector.cpp \
     DFNodeFactory.cpp \
     DFEventsListener.cpp \

@@ -27,28 +27,22 @@
 // Federico Ferri <federico.ferri.it at gmail dot com>
 // -------------------------------------------------------------------
 
-#ifndef DFMATHBINARYOPERATOR_H_INCLUDED
-#define DFMATHBINARYOPERATOR_H_INCLUDED
+#ifndef DFSTRING_H_INCLUDED
+#define DFSTRING_H_INCLUDED
 
-#include "DFNode.h"
-#include "DFScalar.h"
+#include "DFData.h"
+#include "v_repLib.h"
+#include <string>
+#include <sstream>
 
-class DFMathBinaryOperator : public DFNode
+class DFString : public DFData
 {
-private:
-    DFScalar state_;
-    std::string op_;
-
 public:
-    DFMathBinaryOperator(const std::vector<std::string> &args);
-    void onDataReceived(size_t inlet, DFData *data);
+    std::string data;
 
-protected:
-    void op(DFScalar &x, const DFScalar &y);
-    void add(DFScalar &x, const DFScalar &y);
-    void mul(DFScalar &x, const DFScalar &y);
-    void sub(DFScalar &x, const DFScalar &y);
-    void div(DFScalar &x, const DFScalar &y);
+    DFString operator=(const DFString &o);
+
+    std::string str();
 };
 
-#endif // DFMATHBINARYOPERATOR_H_INCLUDED
+#endif // DFSTRING_H_INCLUDED

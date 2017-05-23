@@ -34,15 +34,14 @@ DFMathBinaryOperator::DFMathBinaryOperator(const std::vector<std::string> &args)
     : DFNode(args)
 {
     setNumInlets(2);
-    setNumOutlets(2);
+    setNumOutlets(1);
 
     op_ = args[0];
 
-    for(size_t i = 0; i < 3; i++)
-        state_.data[i] = (i + 1) < args.size() ? boost::lexical_cast<double>(args[i + 1]) : 0;
+    state_.data = args.size() == 2 ? boost::lexical_cast<simFloat>(args[1]) : 0;
 }
 
-void DFMathBinaryOperator::op(DFVector &x, const DFVector &y)
+void DFMathBinaryOperator::op(DFScalar &x, const DFScalar &y)
 {
     if(op_ == "+") add(x, y);
     else if(op_ == "-") sub(x, y);
@@ -50,43 +49,39 @@ void DFMathBinaryOperator::op(DFVector &x, const DFVector &y)
     else if(op_ == "/") div(x, y);
 }
 
-void DFMathBinaryOperator::add(DFVector &x, const DFVector &y)
+void DFMathBinaryOperator::add(DFScalar &x, const DFScalar &y)
 {
-    for(int i = 0; i < 3; i++)
-        x.data[i] += y.data[i];
+    x.data += y.data;
 }
 
-void DFMathBinaryOperator::sub(DFVector &x, const DFVector &y)
+void DFMathBinaryOperator::sub(DFScalar &x, const DFScalar &y)
 {
-    for(int i = 0; i < 3; i++)
-        x.data[i] -= y.data[i];
+    x.data -= y.data;
 }
 
-void DFMathBinaryOperator::mul(DFVector &x, const DFVector &y)
+void DFMathBinaryOperator::mul(DFScalar &x, const DFScalar &y)
 {
-    for(int i = 0; i < 3; i++)
-        x.data[i] *= y.data[i];
+    x.data *= y.data;
 }
 
-void DFMathBinaryOperator::div(DFVector &x, const DFVector &y)
+void DFMathBinaryOperator::div(DFScalar &x, const DFScalar &y)
 {
-    for(int i = 0; i < 3; i++)
-        x.data[i] /= y.data[i];
+    x.data /= y.data;
 }
 
 void DFMathBinaryOperator::onDataReceived(size_t inlet, DFData *data)
 {
-    if(DFVector *vec = dynamic_cast<DFVector*>(data))
+    if(DFScalar *sca = dynamic_cast<DFScalar*>(data))
     {
         if(inlet == 0)
         {
-            DFVector tmp = *vec;
+            DFScalar tmp = *sca;
             op(tmp, state_);
             sendData(0, &tmp);
         }
         else
         {
-            state_ = *vec;
+            state_ = *sca;
         }
     }
 }
