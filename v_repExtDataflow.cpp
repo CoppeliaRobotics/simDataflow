@@ -47,7 +47,7 @@ std::map<DFNodeID,QDataflowModelNode*> nodeById;
 
 void add(SScriptCallBack *p, const char *cmd, add_in *in, add_out *out)
 {
-    out->nodeId = nodeFactory.create(in->cmd)->id();
+    out->nodeId = nodeFactory.create(in->cmd, in->x, in->y)->id();
 }
 
 void remove(SScriptCallBack *p, const char *cmd, remove_in *in, remove_out *out)
