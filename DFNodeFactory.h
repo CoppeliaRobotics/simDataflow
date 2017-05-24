@@ -45,6 +45,8 @@ public:
         createFuncs_[name] = &createFunc<T>;
     }
 
+    DFNode * create(const std::string &args, int x, int y);
+
     DFNode * create(const std::string &args);
 
     DFNode * create(const std::vector<std::string> &args);

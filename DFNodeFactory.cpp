@@ -42,6 +42,13 @@
 
 DFNodeFactory nodeFactory;
 
+DFNode * DFNodeFactory::create(const std::string &args, int x, int y)
+{
+    DFNode *node = create(args);
+    node->setPos(x, y);
+    return node;
+}
+
 DFNode * DFNodeFactory::create(const std::string &args)
 {
     boost::char_separator<char> sep(" ");
