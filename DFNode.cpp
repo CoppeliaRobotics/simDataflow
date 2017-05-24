@@ -118,6 +118,22 @@ DFNodeID DFNode::id() const
     return id_;
 }
 
+int DFNode::x() const
+{
+    return x_;
+}
+
+int DFNode::y() const
+{
+    return y_;
+}
+
+void DFNode::setPos(int x, int y)
+{
+    x_ = x;
+    y_ = y;
+}
+
 std::string DFNode::str() const
 {
     return text_;

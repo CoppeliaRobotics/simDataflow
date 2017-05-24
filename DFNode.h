@@ -99,6 +99,8 @@ private:
     static DFNodeIDMap byId_;
     static DFNodeID nextNodeId_;
     DFNodeID id_;
+    int x_;
+    int y_;
     std::vector<std::string> args_;
     std::string text_;
     std::vector<DFNodeInlet> inlets_;
@@ -133,6 +135,9 @@ public:
     DFNode(const std::vector<std::string> &args);
     virtual ~DFNode();
     DFNodeID id() const;
+    int x() const;
+    int y() const;
+    void setPos(int x, int y);
     std::string str() const;
     DFNodeInlet inlet(size_t i) const;
     size_t inletCount() const;
