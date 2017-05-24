@@ -56,7 +56,11 @@ DFEventsListener::DFEventsListener()
 void DFEventsListener::onNodeAdded(QDataflowModelNode *node)
 {
     DBG << (void*)node << " text='" << node->text().toStdString() << "'" << std::endl;
-    if(node->text() == "") return;
+    if(node->text() == "")
+    {
+        emit setNodeInfo(node, "", 0, 0, false, true);
+        return;
+    }
     std::string cmd = node->text().toStdString();
     DFNode *dfnode = nodeFactory.create(cmd);
     node->setProperty("DFNode", qVariantFromValue((void*)dfnode));
@@ -102,7 +106,11 @@ void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
     }
 
     // ignore null node:
-    if(node->text() == "") return;
+    if(node->text() == "")
+    {
+        emit setNodeInfo(node, "", 0, 0, false, true);
+        return;
+    }
 
     std::string cmd = node->text().toStdString();
     DFNode *dfnode = 0L;
