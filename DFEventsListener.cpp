@@ -43,7 +43,6 @@ DFEventsListener::DFEventsListener()
     QDataflowModel *model = mainWindow->canvas->model();
     QObject::connect(model, &QDataflowModel::nodeAdded, this, &DFEventsListener::onNodeAdded);
     QObject::connect(model, &QDataflowModel::nodeRemoved, this, &DFEventsListener::onNodeRemoved);
-    QObject::connect(model, &QDataflowModel::nodeValidChanged, this, &DFEventsListener::onNodeValidChanged);
     QObject::connect(model, &QDataflowModel::nodePosChanged, this, &DFEventsListener::onNodePosChanged);
     QObject::connect(model, &QDataflowModel::nodeTextChanged, this, &DFEventsListener::onNodeTextChanged);
     QObject::connect(model, &QDataflowModel::nodeInletCountChanged, this, &DFEventsListener::onNodeInletCountChanged);
@@ -51,6 +50,7 @@ DFEventsListener::DFEventsListener()
     QObject::connect(model, &QDataflowModel::connectionAdded, this, &DFEventsListener::onConnectionAdded);
     QObject::connect(model, &QDataflowModel::connectionRemoved, this, &DFEventsListener::onConnectionRemoved);
     QObject::connect(this, &DFEventsListener::setNodeInfo, uiProxy, &UIProxy::setNodeInfo);
+    QObject::connect(this, &DFEventsListener::graphChanged, this, &DFEventsListener::onGraphChanged);
 }
 
 void DFEventsListener::onNodeAdded(QDataflowModelNode *node)
@@ -62,9 +62,10 @@ void DFEventsListener::onNodeAdded(QDataflowModelNode *node)
         return;
     }
     std::string cmd = node->text().toStdString();
-    DFNode *dfnode = nodeFactory.create(cmd);
+    DFNode *dfnode = nodeFactory.create(cmd, node->pos().x(), node->pos().y());
     node->setProperty("DFNode", qVariantFromValue((void*)dfnode));
     DBG << "created DFNode " << dfnode->id() << std::endl;
+    emit graphChanged();
 }
 
 void DFEventsListener::onNodeRemoved(QDataflowModelNode *node)
@@ -75,16 +76,18 @@ void DFEventsListener::onNodeRemoved(QDataflowModelNode *node)
     node->setProperty("DFNode", QVariant());
     DBG << "removing DFNode " << dfnode->id() << std::endl;
     delete dfnode;
-}
-
-void DFEventsListener::onNodeValidChanged(QDataflowModelNode *node, bool valid)
-{
-    DBG << "node=" << (void*)node << std::endl;
+    emit graphChanged();
 }
 
 void DFEventsListener::onNodePosChanged(QDataflowModelNode *node, QPoint pos)
 {
     DBG << "node=" << (void*)node << std::endl;
+    if(node->property("DFNode").isValid())
+    {
+        DFNode *dfnode = (DFNode*)node->property("DFNode").value<void*>();
+        dfnode->setPos(node->pos().x(), node->pos().y());
+        emit graphChanged();
+    }
 }
 
 void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
@@ -109,6 +112,7 @@ void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
     if(node->text() == "")
     {
         emit setNodeInfo(node, "", 0, 0, false, true);
+        emit graphChanged();
         return;
     }
 
@@ -116,17 +120,19 @@ void DFEventsListener::onNodeTextChanged(QDataflowModelNode *node, QString text)
     DFNode *dfnode = 0L;
     try
     {
-        dfnode = nodeFactory.create(cmd);
+        dfnode = nodeFactory.create(cmd, node->pos().x(), node->pos().y());
     }
     catch(std::runtime_error &ex)
     {
         simAddStatusbarMessage((boost::format("Dataflow: object creation error: %s") % ex.what()).str().c_str());
         emit setNodeInfo(node, node->text().toStdString(), 0, 0, false, true);
+        emit graphChanged();
         return;
     }
     DBG << "created DFNode " << dfnode->id() << std::endl;
     node->setProperty("DFNode", qVariantFromValue((void*)dfnode));
     emit setNodeInfo(node, dfnode->str(), dfnode->inletCount(), dfnode->outletCount(), true, false);
+    emit graphChanged();
 
     // restore connections:
     BOOST_FOREACH(DFConnection c, oldconns)
@@ -158,6 +164,7 @@ void DFEventsListener::onConnectionAdded(QDataflowModelConnection *conn)
     DFNode *src = (DFNode*)vsrc.value<void*>();
     DFNode *dst = (DFNode*)vdst.value<void*>();
     src->connect(conn->source()->index(), dst, conn->dest()->index());
+    emit graphChanged();
 }
 
 void DFEventsListener::onConnectionRemoved(QDataflowModelConnection *conn)
@@ -169,5 +176,12 @@ void DFEventsListener::onConnectionRemoved(QDataflowModelConnection *conn)
     DFNode *src = (DFNode*)vsrc.value<void*>();
     DFNode *dst = (DFNode*)vdst.value<void*>();
     src->disconnect(conn->source()->index(), dst, conn->dest()->index());
+    emit graphChanged();
+}
+
+void DFEventsListener::onGraphChanged()
+{
+    DBG << "new graph:" << std::endl;
+    DFNode::saveGraph("");
 }
 

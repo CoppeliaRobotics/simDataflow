@@ -147,16 +147,15 @@ public:
     size_t argCount();
     std::set<DFNodeOutlet> inboundConnections(size_t inlet) const;
     std::set<DFNodeInlet> outboundConnections(size_t outlet) const;
-    std::set<DFConnection> connections();
-    size_t connections(std::vector<DFNodeID> &srcId, std::vector<size_t> &srcOutlet, std::vector<DFNodeID> &dstId, std::vector<size_t> &dstInlet);
-    size_t connections(std::vector<int> &srcId, std::vector<int> &srcOutlet, std::vector<int> &dstId, std::vector<int> &dstInlet);
-    static size_t allConnections(std::vector<DFNodeID> &srcId, std::vector<size_t> &srcOutlet, std::vector<DFNodeID> &dstId, std::vector<size_t> &dstInlet);
-    static size_t allConnections(std::vector<int> &srcId, std::vector<int> &srcOutlet, std::vector<int> &dstId, std::vector<int> &dstInlet);
+    std::set<DFConnection> connections(bool inbound = true, bool outbound = true);
+    static std::set<DFConnection> allConnections();
+    static size_t allConnections(std::vector<int> &srcNodeIds, std::vector<int> &srcOutlets, std::vector<int> &dstNodeIds, std::vector<int> &dstInlets);
     bool isConnected(size_t outlet, DFNode *node, size_t inlet) const;
     void connect(size_t outlet, DFNode *node, size_t inlet);
     void disconnect(size_t outlet, DFNode *node, size_t inlet);
     void disconnectInlet(size_t inlet);
     void disconnectOutlet(size_t outlet);
+    void disconnect();
     static DFNode * byId(DFNodeID id);
     static DFNode * byId(DFNodeID id, DFNode *defaultIfNotFound);
     static void deleteById(DFNodeID id);
@@ -167,6 +166,9 @@ public:
     static void getInfo(DFNodeID id, std::string &cmd, int &inletCount, int &outletCount, int &x, int &y);
     virtual void tick();
     static void tickAll();
+    static void clearGraph();
+    static void loadGraph(std::string filename);
+    static void saveGraph(std::string filename);
 
     virtual simInt getObjectHandle(const std::string &arg);
 

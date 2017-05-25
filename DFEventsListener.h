@@ -42,16 +42,17 @@ public:
 public slots:
     void onNodeAdded(QDataflowModelNode *node);
     void onNodeRemoved(QDataflowModelNode *node);
-    void onNodeValidChanged(QDataflowModelNode *node, bool valid);
     void onNodePosChanged(QDataflowModelNode *node, QPoint pos);
     void onNodeTextChanged(QDataflowModelNode *node, QString text);
     void onNodeInletCountChanged(QDataflowModelNode *node, int count);
     void onNodeOutletCountChanged(QDataflowModelNode *node, int count);
     void onConnectionAdded(QDataflowModelConnection *conn);
     void onConnectionRemoved(QDataflowModelConnection *conn);
+    void onGraphChanged();
 
 signals:
     void setNodeInfo(QDataflowModelNode *node, std::string text, int inlets, int outlets, bool valid, bool blockSignals);
+    void graphChanged();
 };
 
 #endif // DFEVENTSLISTENER_H_INCLUDED
