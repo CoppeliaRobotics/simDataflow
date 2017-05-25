@@ -167,8 +167,10 @@ public:
     virtual void tick();
     static void tickAll();
     static void clearGraph();
-    static void loadGraph(std::string filename);
-    static void saveGraph(std::string filename);
+    static void loadGraph(std::string s);
+    static std::string saveGraph();
+    static void saveGraphToScene();
+    static void restoreGraphFromScene();
 
     virtual simInt getObjectHandle(const std::string &arg);
 

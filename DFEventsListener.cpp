@@ -181,7 +181,6 @@ void DFEventsListener::onConnectionRemoved(QDataflowModelConnection *conn)
 
 void DFEventsListener::onGraphChanged()
 {
-    DBG << "new graph:" << std::endl;
-    DFNode::saveGraph("");
+    DFNode::saveGraphToScene();
 }
 

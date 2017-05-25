@@ -49,6 +49,8 @@ public:
 
     DFNode * create(const std::string &args);
 
+    DFNode * create(const std::vector<std::string> &args, int x, int y);
+
     DFNode * create(const std::vector<std::string> &args);
 
     inline size_t size() {return createFuncs_.size();}

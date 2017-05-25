@@ -28,6 +28,7 @@
 // -------------------------------------------------------------------
 
 #include "DFNode.h"
+#include "DFNodeFactory.h"
 #include "debug.h"
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
@@ -451,20 +452,90 @@ void DFNode::clearGraph()
     }
 }
 
-void DFNode::loadGraph(std::string filename)
+void DFNode::loadGraph(std::string s)
 {
+    std::istringstream ss(s);
+    std::map<int, int> idmap;
+
+    while(!ss.eof())
+    {
+        std::string key, stop;
+        ss >> key;
+        if(key == "NODE")
+        {
+            int id, x, y;
+            ss >> id >> x >> y;
+            std::string tok;
+            std::vector<std::string> args;
+            while(true)
+            {
+                ss >> tok;
+                if(tok == ";") break;
+                args.push_back(tok);
+            }
+            DFNode *node = nodeFactory.create(args, x, y);
+            idmap[id] = node->id();
+            DBG << "NODE " << node->id() << " " << x << " " << y << " " << node->str() << std::endl;
+        }
+        else if(key == "CONNECTION")
+        {
+            int srcId, srcOutlet, dstId, dstInlet;
+            ss >> srcId >> srcOutlet >> dstId >> dstInlet >> stop;
+            srcId = idmap[srcId];
+            dstId = idmap[dstId];
+            DBG << "CONNECTION " << srcId << " " << srcOutlet << " " << dstId << " " << dstInlet << std::endl;
+            DFNode::connect(srcId, srcOutlet, dstId, dstInlet);
+        }
+    }
 }
 
-void DFNode::saveGraph(std::string filename)
+std::string DFNode::saveGraph()
 {
+    std::stringstream ss;
+
     BOOST_FOREACH(DFNode *node, nodes())
     {
-        DBG << "NODE " << node->x() << " " << node->y() << " " << "[" << node->id() << "] " << node->str() << std::endl;
+        ss << "NODE " << node->id() << " " << node->x() << " " << node->y() << " " << node->str() << " " << ";" << std::endl;
     }
 
     BOOST_FOREACH(const DFConnection &conn, allConnections())
     {
-        DBG << "CONNECTION " << conn.src->id() << " " << conn.srcOutlet << " " << conn.dst->id() << " " << conn.dstInlet << std::endl;
+        ss << "CONNECTION " << conn.src->id() << " " << conn.srcOutlet << " " << conn.dst->id() << " " << conn.dstInlet << " " << ";" << std::endl;
+    }
+
+    return ss.str();
+}
+
+void DFNode::saveGraphToScene()
+{
+    DBG << std::endl;
+    std::string graph = DFNode::saveGraph();
+    simWriteCustomDataBlock(sim_handle_scene, "Dataflow.Graph", graph.c_str(), graph.length());
+    DBG << "new graph:" << std::endl << graph;
+}
+
+void DFNode::restoreGraphFromScene()
+{
+    DFNode::clearGraph();
+    simInt size = 0;
+    simChar *data = simReadCustomDataBlock(sim_handle_scene, "Dataflow.Graph", &size);
+    if(data)
+    {
+        DBG << "found a Dataflow.Graph block" << std::endl;
+        std::string graph(data, size);
+        try
+        {
+            DFNode::loadGraph(graph);
+        }
+        catch(std::exception &ex)
+        {
+            DBG << "failed to restore graph: " << ex.what() << std::endl;
+            DFNode::clearGraph();
+        }
+    }
+    else
+    {
+        DBG << "the scene does not have a Dataflow.Graph block" << std::endl;
     }
 }
 

@@ -37,13 +37,15 @@
 #include "DFNodeFactory.h"
 #include "plugin.h"
 #include "stubs.h"
+#include "debug.h"
 
 simInt menuItemHandle[1];
-DFWindow *mainWindow;
-DFEventsListener *dfEventsListener;
-UIProxy *uiProxy;
+DFWindow *mainWindow = 0L;
+DFEventsListener *dfEventsListener = 0L;
+UIProxy *uiProxy = 0L;
 std::map<QDataflowModelNode*,DFNodeID> nodeId;
 std::map<DFNodeID,QDataflowModelNode*> nodeById;
+bool pendingSceneLoad = false;
 
 void add(SScriptCallBack *p, const char *cmd, add_in *in, add_out *out)
 {
@@ -83,18 +85,39 @@ void getNodeInfo(SScriptCallBack *p, const char *cmd, getNodeInfo_in *in, getNod
     DFNode::getInfo(in->nodeId, out->cmd, out->inletCount, out->outletCount, out->x, out->y);
 }
 
+void initInUiThread()
+{
+    uiThread();
+    DBG << std::endl;
+
+    if(!registerScriptStuff())
+        throw std::runtime_error("failed to register script stuff");
+
+    simAddModuleMenuEntry("", 1, &menuItemHandle[0]);
+    simSetModuleMenuItemState(menuItemHandle[0], 1, "Show dataflow graph");
+    mainWindow = new DFWindow(reinterpret_cast<QWidget*>(simGetMainWindow(1)));
+    uiProxy = new UIProxy();
+}
+
+void initInSimThread()
+{
+    if(dfEventsListener) return;
+
+    simThread();
+    DBG << std::endl;
+
+    DBG << "init DFEventsListener. mainWindow=" << (void*)mainWindow << std::endl;
+    dfEventsListener = new DFEventsListener();
+
+    initNodeFactory();
+}
+
 class Plugin : public vrep::Plugin
 {
 public:
     void onStart()
     {
-        if(!registerScriptStuff())
-            throw std::runtime_error("failed to register script stuff");
-
-        simAddModuleMenuEntry("", 1, &menuItemHandle[0]);
-        simSetModuleMenuItemState(menuItemHandle[0], 1, "Show dataflow graph");
-        mainWindow = new DFWindow(reinterpret_cast<QWidget*>(simGetMainWindow(1)));
-        uiProxy = new UIProxy();
+        initInUiThread();
     }
 
     void onInstancePass(bool objectsErased, bool objectsCreated, bool modelLoaded, bool sceneLoaded, bool undoCalled, bool redoCalled, bool sceneSwitched, bool editModeActive, bool objectsScaled, bool selectionStateChanged, bool keyPressed, bool simulationStarted, bool simulationEnded)
@@ -103,9 +126,14 @@ public:
         if(firstInstancePass)
         {
             firstInstancePass = false;
-            // do some initialization in SIM thread here...
-            dfEventsListener = new DFEventsListener();
-            initNodeFactory();
+            initInSimThread();
+        }
+
+        if(pendingSceneLoad)
+        {
+            pendingSceneLoad = false;
+            DFNode::restoreGraphFromScene();
+            mainWindow->restoreGeometryFromScene();
         }
 
         try
@@ -116,6 +144,19 @@ public:
         {
             simSetLastError((boost::format("Dataflow:%d") % ex.node()->id()).str().c_str(), ex.what());
         }
+    }
+
+    void onInstanceSwitch(int sceneID)
+    {
+        DBG << "sceneID=" << sceneID << std::endl;
+        DFNode::restoreGraphFromScene();
+        mainWindow->restoreGeometryFromScene();
+    }
+
+    void onSceneLoaded()
+    {
+        DBG << std::endl;
+        pendingSceneLoad = true;
     }
 
     void onMenuItemSelected(int itemHandle, int itemState)

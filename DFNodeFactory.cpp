@@ -36,6 +36,7 @@
 #include "DFVectorPack.h"
 #include "DFVectorUnpack.h"
 #include "plugin.h"
+#include "debug.h"
 
 #include <iostream>
 #include <boost/tokenizer.hpp>
@@ -57,6 +58,13 @@ DFNode * DFNodeFactory::create(const std::string &args)
     BOOST_FOREACH(std::string token, tokenizer)
         tokens.push_back(token);
     return create(tokens);
+}
+
+DFNode * DFNodeFactory::create(const std::vector<std::string> &args, int x, int y)
+{
+    DFNode *node = create(args);
+    node->setPos(x, y);
+    return node;
 }
 
 DFNode * DFNodeFactory::create(const std::vector<std::string> &args)
@@ -88,7 +96,7 @@ std::vector<std::string> DFNodeFactory::classNames()
 
 void initNodeFactory()
 {
-    std::cout << PLUGIN_NAME << ": initializing node factory" << std::endl;
+    DBG << "initializing node factory" << std::endl;
     nodeFactory.registerClass<DFMathBinaryOperator>("+");
     nodeFactory.registerClass<DFMathBinaryOperator>("-");
     nodeFactory.registerClass<DFMathBinaryOperator>("*");
@@ -102,6 +110,6 @@ void initNodeFactory()
     nodeFactory.registerClass<DFVectorMathBinaryOperator>("vec./");
     nodeFactory.registerClass<DFVectorPack>("vec.pack");
     nodeFactory.registerClass<DFVectorUnpack>("vec.unpack");
-    std::cout << PLUGIN_NAME << ": initialized node factory (" << nodeFactory.size() << " classes)" << std::endl;
+    DBG << "initialized node factory (" << nodeFactory.size() << " classes)" << std::endl;
 }
 

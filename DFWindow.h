@@ -40,6 +40,12 @@ class DFWindow : public QMainWindow, public QDataflowTextCompletion
 public:
     DFWindow(QWidget *parent);
 
+    void moveEvent(QMoveEvent* event);
+    void resizeEvent(QResizeEvent* event);
+
+    void saveGeometryToScene();
+    void restoreGeometryFromScene();
+
     void complete(QString txt, QStringList &completionList);
 
     QDataflowCanvas *canvas;
