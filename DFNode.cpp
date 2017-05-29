@@ -125,6 +125,16 @@ void DFNode::tickAll()
     }
 }
 
+void DFNode::sendData(size_t outlet, DFData *data)
+{
+    BOOST_FOREACH(QDataflowModelConnection *conn, this->outlet(outlet)->connections())
+    {
+        QDataflowModelNode *node = conn->dest()->node();
+        if(DFNode *dfnode = dynamic_cast<DFNode*>(node->dataflowMetaObject()))
+            dfnode->onDataReceived(conn->dest()->index(), data);
+    }
+}
+
 void DFNode::onDataReceived(size_t inlet, DFData *data)
 {
     throw DFException(this, (boost::format("no method for %s on inlet %d") % data->tag() % inlet).str());

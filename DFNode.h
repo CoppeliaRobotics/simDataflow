@@ -82,7 +82,7 @@ public:
     static std::vector<DFNode*> nodes();
     virtual void tick();
     static void tickAll();
-
+    void sendData(size_t outlet, DFData *data);
     virtual simInt getObjectHandle(const std::string &arg);
 
 protected:
