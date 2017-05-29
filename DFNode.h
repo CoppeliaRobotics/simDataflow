@@ -42,7 +42,6 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
-#include <QMutex>
 
 class DFNode;
 class DFData;
@@ -67,7 +66,6 @@ typedef std::map<DFNodeID, DFNode*> DFNodeIDMap;
 class DFNode : public QDataflowMetaObject
 {
 private:
-    static QMutex mutex;
     static DFNodeIDMap byId_;
     static DFNodeID nextNodeId_;
     DFNodeID id_;

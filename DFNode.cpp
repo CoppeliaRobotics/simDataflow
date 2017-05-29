@@ -32,9 +32,7 @@
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
 #include <utility>
-#include <QMutexLocker>
 
-QMutex DFNode::mutex(QMutex::Recursive);
 DFNodeIDMap DFNode::byId_;
 DFNodeID DFNode::nextNodeId_ = 0;
 
@@ -60,15 +58,11 @@ DFNode * DFException::node() const
 DFNode::DFNode(QDataflowModelNode *node, const std::vector<std::string> &args)
     : QDataflowMetaObject(node), id_(DFNode::nextNodeId_++)
 {
-    QMutexLocker locker(&mutex);
-
     DFNode::byId_[id_] = this;
 }
 
 DFNode::~DFNode()
 {
-    QMutexLocker locker(&mutex);
-
     DFNode::byId_.erase(id_);
 }
 
@@ -93,16 +87,12 @@ DFNode * DFNode::byId(DFNodeID id, DFNode *defaultIfNotFound)
 
 void DFNode::deleteById(DFNodeID id)
 {
-    QMutexLocker locker(&mutex);
-
     DFNode *node = DFNode::byId(id);
     delete node;
 }
 
 std::vector<DFNodeID> DFNode::nodeIds()
 {
-    QMutexLocker locker(&mutex);
-
     std::vector<DFNodeID> ret;
     BOOST_FOREACH(const DFNodeIDMap::value_type &i, DFNode::byId_)
     {
@@ -114,8 +104,6 @@ std::vector<DFNodeID> DFNode::nodeIds()
 
 std::vector<DFNode*> DFNode::nodes()
 {
-    QMutexLocker locker(&mutex);
-
     std::vector<DFNode*> ret;
     BOOST_FOREACH(const DFNodeIDMap::value_type &i, DFNode::byId_)
     {
@@ -131,8 +119,6 @@ void DFNode::tick()
 
 void DFNode::tickAll()
 {
-    QMutexLocker locker(&mutex);
-
     BOOST_FOREACH(DFNodeIDMap::value_type &i, DFNode::byId_)
     {
         i.second->tick();
