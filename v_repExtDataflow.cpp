@@ -36,7 +36,6 @@
 #include "DFNode.h"
 #include "plugin.h"
 #include "stubs.h"
-#include "debug.h"
 
 simInt menuItemHandle[1];
 DFWindow *mainWindow = 0L;

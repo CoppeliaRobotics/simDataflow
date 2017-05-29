@@ -32,7 +32,6 @@
 #include "DFNode.h"
 #include "UIProxy.h"
 #include "stubs.h"
-#include "debug.h"
 
 #include "DFMathBinaryOperator.h"
 #include "DFObjectPos.h"
@@ -126,7 +125,8 @@ void DFModel::loadGraph(std::string s)
 
     blockGraphChangeSignal = false;
 
-    emit graphChanged();
+    if(!blockGraphChangeSignal)
+        emit graphChanged();
 
     DBG << "loaded " << numNodes << " nodes and " << numConnections << " connections" << std::endl;
 }
@@ -248,14 +248,16 @@ void DFModel::onNodeAdded(QDataflowModelNode *node)
 {
     DBG << std::endl;
 
-    emit graphChanged();
+    if(!blockGraphChangeSignal)
+        emit graphChanged();
 }
 
 void DFModel::onNodeRemoved(QDataflowModelNode *node)
 {
     DBG << std::endl;
 
-    emit graphChanged();
+    if(!blockGraphChangeSignal)
+        emit graphChanged();
 }
 
 void DFModel::onNodeTextChanged(QDataflowModelNode *node, QString text)
@@ -286,29 +288,31 @@ void DFModel::onNodeTextChanged(QDataflowModelNode *node, QString text)
         node->setOutletCount(0);
     }
 
-    emit graphChanged();
+    if(!blockGraphChangeSignal)
+        emit graphChanged();
 }
 
 void DFModel::onConnectionAdded(QDataflowModelConnection *conn)
 {
     DBG << std::endl;
 
-    emit graphChanged();
+    if(!blockGraphChangeSignal)
+        emit graphChanged();
 }
 
 void DFModel::onConnectionRemoved(QDataflowModelConnection *conn)
 {
     DBG << std::endl;
 
-    emit graphChanged();
+    if(!blockGraphChangeSignal)
+        emit graphChanged();
 }
 
 void DFModel::onGraphChanged()
 {
     DBG << std::endl;
 
-    if(!blockGraphChangeSignal)
-        saveGraphToScene();
+    saveGraphToScene();
 }
 
 DFNode * DFModel::createDFMetaObject(QDataflowModelNode *node, const std::string &args)
