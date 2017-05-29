@@ -30,7 +30,6 @@
 #include "DFModel.h"
 #include "DFWindow.h"
 #include "DFNode.h"
-#include "UIProxy.h"
 #include "stubs.h"
 
 #include "DFMathBinaryOperator.h"
@@ -44,7 +43,6 @@
 #include <boost/tokenizer.hpp>
 
 extern DFWindow *mainWindow;
-extern UIProxy *uiProxy;
 
 DFModel::DFModel(QObject *parent)
     : QDataflowModel(parent), blockGraphChangeSignal(false)

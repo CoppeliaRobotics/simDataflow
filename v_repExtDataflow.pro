@@ -77,7 +77,6 @@ HEADERS += \
     data-classes/DFString.h \
     data-classes/DFVector.h \
     DFModel.h \
-    UIProxy.h \
     DFWindow.h \
     plugin.h \
     debug.h \
@@ -103,7 +102,6 @@ SOURCES += \
     data-classes/DFString.cpp \
     data-classes/DFVector.cpp \
     DFModel.cpp \
-    UIProxy.cpp \
     DFWindow.cpp \
     debug.cpp \
     v_repExtDataflow.cpp \

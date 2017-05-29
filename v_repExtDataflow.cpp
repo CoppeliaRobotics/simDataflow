@@ -32,7 +32,6 @@
 #include "v_repPlusPlus/Plugin.h"
 #include "DFModel.h"
 #include "DFWindow.h"
-#include "UIProxy.h"
 #include "DFNode.h"
 #include "plugin.h"
 #include "stubs.h"
@@ -40,7 +39,6 @@
 simInt menuItemHandle[1];
 DFWindow *mainWindow = 0L;
 DFModel *dfModel = 0L;
-UIProxy *uiProxy = 0L;
 std::map<QDataflowModelNode*,DFNodeID> nodeId;
 std::map<DFNodeID,QDataflowModelNode*> nodeById;
 bool pendingSceneLoad = false;
@@ -110,9 +108,6 @@ void initInUiThread()
 
     DBG << "create main window..." << std::endl;
     mainWindow = new DFWindow(reinterpret_cast<QWidget*>(simGetMainWindow(1)));
-
-    DBG << "create UIProxy..." << std::endl;
-    uiProxy = new UIProxy();
 }
 
 void initInSimThread()
