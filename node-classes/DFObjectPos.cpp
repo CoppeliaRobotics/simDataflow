@@ -29,11 +29,11 @@
 
 #include "DFObjectPos.h"
 
-DFObjectPos::DFObjectPos(const std::vector<std::string> &args)
-    : DFNode(args)
+DFObjectPos::DFObjectPos(QDataflowModelNode *node, const std::vector<std::string> &args)
+    : DFNode(node, args)
 {
-    setNumInlets(1);
-    setNumOutlets(1);
+    setInletCount(1);
+    setOutletCount(1);
 
     if(args.size() < 2)
         throw std::runtime_error("too few args");

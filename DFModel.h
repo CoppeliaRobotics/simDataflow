@@ -27,49 +27,67 @@
 // Federico Ferri <federico.ferri.it at gmail dot com>
 // -------------------------------------------------------------------
 
-#ifndef NODEFACTORY_H_INCLUDED
-#define NODEFACTORY_H_INCLUDED
+#ifndef DFMODEL_H_INCLUDED
+#define DFMODEL_H_INCLUDED
 
-#include <vector>
-#include <string>
-#include <map>
+#include <QObject>
+#include "qdataflowmodel.h"
 
 class DFNode;
 
-class DFNodeFactory
+class DFModel : public QDataflowModel
 {
+    Q_OBJECT
 public:
+    DFModel(QObject *parent = 0);
+
+    void loadGraph(std::string s);
+    std::string saveGraph();
+    void clearGraph();
+    void saveGraphToScene();
+    void restoreGraphFromScene();
+
+protected:
+    virtual QDataflowModelNode * newNode(QPoint pos, QString text, int inletCount, int outletCount);
+
+public slots:
+    void onNodeAdded(QDataflowModelNode *node);
+    void onNodeRemoved(QDataflowModelNode *node);
+    void onNodeTextChanged(QDataflowModelNode *node, QString text);
+    void onConnectionAdded(QDataflowModelConnection *conn);
+    void onConnectionRemoved(QDataflowModelConnection *conn);
+    void onGraphChanged();
+
+signals:
+    void graphChanged();
+
+private:
+    bool blockGraphChangeSignal;
+
+    // object factory:
+
     template<typename T>
     void registerClass(std::string name)
     {
         createFuncs_[name] = &createFunc<T>;
     }
 
-    DFNode * create(const std::string &args, int x, int y);
+    DFNode * createDFMetaObject(QDataflowModelNode *node, const std::string &args);
+    DFNode * createDFMetaObject(QDataflowModelNode *node, const std::vector<std::string> &args);
 
-    DFNode * create(const std::string &args);
-
-    DFNode * create(const std::vector<std::string> &args, int x, int y);
-
-    DFNode * create(const std::vector<std::string> &args);
-
-    inline size_t size() {return createFuncs_.size();}
-
-    std::vector<std::string> classNames();
-
-private:
     template<typename T>
-    static DFNode * createFunc(const std::vector<std::string> &args)
+    static DFNode * createFunc(QDataflowModelNode *node, const std::vector<std::string> &args)
     {
-        return new T(args);
+        return new T(node, args);
     }
 
-    typedef DFNode* (*PCreateFunc)(const std::vector<std::string> &);
+    typedef DFNode* (*PCreateFunc)(QDataflowModelNode *, const std::vector<std::string> &);
     std::map<std::string, PCreateFunc> createFuncs_;
+
+public:
+    std::vector<std::string> classNames();
 };
 
-extern DFNodeFactory nodeFactory;
+extern DFModel *dfModel;
 
-void initNodeFactory();
-
-#endif // NODEFACTORY_H_INCLUDED
+#endif // DFMODEL_H_INCLUDED

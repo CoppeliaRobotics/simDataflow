@@ -30,11 +30,11 @@
 #include "DFVectorMathBinaryOperator.h"
 #include "DFData.h"
 
-DFVectorMathBinaryOperator::DFVectorMathBinaryOperator(const std::vector<std::string> &args)
-    : DFNode(args)
+DFVectorMathBinaryOperator::DFVectorMathBinaryOperator(QDataflowModelNode *node, const std::vector<std::string> &args)
+    : DFNode(node, args)
 {
-    setNumInlets(2);
-    setNumOutlets(1);
+    setInletCount(2);
+    setOutletCount(1);
 
     std::string prefix = args[0].substr(0, args[0].length() - 1);
     if(prefix != "vec.")

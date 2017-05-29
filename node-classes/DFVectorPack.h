@@ -41,7 +41,7 @@ private:
     DFVector state_;
 
 public:
-    DFVectorPack(const std::vector<std::string> &args);
+    DFVectorPack(QDataflowModelNode *node, const std::vector<std::string> &args);
     void onDataReceived(size_t inlet, DFData *data);
 };
 

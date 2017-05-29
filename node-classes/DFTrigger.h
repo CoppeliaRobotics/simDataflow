@@ -35,11 +35,14 @@
 class DFTrigger : public DFNode
 {
 private:
-    void validateArg(const std::string &arg);
+    char validateArg(const std::string &arg);
 
 public:
-    DFTrigger(const std::vector<std::string> &args);
+    DFTrigger(QDataflowModelNode *node, const std::vector<std::string> &args);
     void onDataReceived(size_t inlet, DFData *data);
+
+private:
+    std::vector<char> outletType;
 };
 
 #endif // DFTRIGGER_H_INCLUDED

@@ -29,11 +29,11 @@
 
 #include "DFVectorPack.h"
 
-DFVectorPack::DFVectorPack(const std::vector<std::string> &args)
-    : DFNode(args)
+DFVectorPack::DFVectorPack(QDataflowModelNode *node, const std::vector<std::string> &args)
+    : DFNode(node, args)
 {
-    setNumInlets(3);
-    setNumOutlets(1);
+    setInletCount(3);
+    setOutletCount(1);
 
     if(args.size() != 1 && args.size() != 4)
         throw std::runtime_error("bad arg count");

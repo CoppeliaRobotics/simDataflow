@@ -38,7 +38,7 @@ private:
     std::string prefix_;
 
 public:
-    DFPrint(const std::vector<std::string> &args);
+    DFPrint(QDataflowModelNode *node, const std::vector<std::string> &args);
     void onDataReceived(size_t inlet, DFData *data);
 };
 

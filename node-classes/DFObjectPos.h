@@ -40,7 +40,7 @@ private:
     DFVector pos_;
 
 public:
-    DFObjectPos(const std::vector<std::string> &args);
+    DFObjectPos(QDataflowModelNode *node, const std::vector<std::string> &args);
     void onDataReceived(size_t inlet, DFData *data);
     void tick();
 };

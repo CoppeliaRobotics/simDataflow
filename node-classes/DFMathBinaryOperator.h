@@ -40,7 +40,7 @@ private:
     std::string op_;
 
 public:
-    DFMathBinaryOperator(const std::vector<std::string> &args);
+    DFMathBinaryOperator(QDataflowModelNode *node, const std::vector<std::string> &args);
     void onDataReceived(size_t inlet, DFData *data);
 
 protected:

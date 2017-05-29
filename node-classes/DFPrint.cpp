@@ -30,10 +30,10 @@
 #include "DFPrint.h"
 #include "DFData.h"
 
-DFPrint::DFPrint(const std::vector<std::string> &args)
-    : DFNode(args)
+DFPrint::DFPrint(QDataflowModelNode *node, const std::vector<std::string> &args)
+    : DFNode(node, args)
 {
-    setNumInlets(1);
+    setInletCount(1);
 
     if(args.size() == 1)
         prefix_ = "print";

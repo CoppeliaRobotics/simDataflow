@@ -32,6 +32,7 @@
 
 #include "v_repLib.h"
 #include "DFData.h"
+#include "qdataflowmodel.h"
 #include <sstream>
 #include <string>
 #include <vector>
@@ -45,35 +46,6 @@
 
 class DFNode;
 class DFData;
-struct DFNodeInlet;
-struct DFNodeOutlet;
-struct DFConnection;
-
-struct DFNodeIOlet
-{
-    DFNode *node;
-    size_t index;
-
-    bool operator<(const DFNodeIOlet &o) const;
-};
-
-struct DFNodeInlet : public DFNodeIOlet
-{
-};
-
-struct DFNodeOutlet : public DFNodeIOlet
-{
-};
-
-struct DFConnection
-{
-    DFNode *src;
-    size_t srcOutlet;
-    DFNode *dst;
-    size_t dstInlet;
-
-    bool operator<(const DFConnection &o) const;
-};
 
 class DFException : public std::runtime_error
 {
@@ -92,93 +64,30 @@ private:
 typedef size_t DFNodeID;
 typedef std::map<DFNodeID, DFNode*> DFNodeIDMap;
 
-class DFNode
+class DFNode : public QDataflowMetaObject
 {
 private:
     static QMutex mutex;
     static DFNodeIDMap byId_;
     static DFNodeID nextNodeId_;
     DFNodeID id_;
-    int x_;
-    int y_;
-    std::vector<std::string> args_;
-    std::string text_;
-    std::vector<DFNodeInlet> inlets_;
-    std::vector<DFNodeOutlet> outlets_;
-    std::vector< std::set<DFNodeOutlet> > inboundConnections_;
-    std::vector< std::set<DFNodeInlet> > outboundConnections_;
-
-    template<typename T>
-    void setNumIOlets(std::vector<T> &v, size_t n)
-    {
-        size_t oldSize = v.size();
-        v.resize(n);
-        for(size_t i = oldSize; i < n; i++)
-        {
-            v[i].node = this;
-            v[i].index = i;
-        }
-    }
-
-    template<typename T>
-    void validateIOlet(const std::vector<T> &v, size_t i, const char *n) const
-    {
-        if(i >= v.size())
-            throw std::range_error((boost::format("invalid %s index: %d") % n % i).str());
-    }
-
-    void validateInlet(size_t i) const;
-    void validateOutlet(size_t i) const;
-    void validateNode(DFNode *node) const;
 
 public:
-    DFNode(const std::vector<std::string> &args);
+    DFNode(QDataflowModelNode *node, const std::vector<std::string> &args);
     virtual ~DFNode();
     DFNodeID id() const;
-    int x() const;
-    int y() const;
-    void setPos(int x, int y);
-    std::string str() const;
-    DFNodeInlet inlet(size_t i) const;
-    size_t inletCount() const;
-    DFNodeOutlet outlet(size_t i) const;
-    size_t outletCount() const;
-    std::string arg(size_t i);
-    size_t argCount();
-    std::set<DFNodeOutlet> inboundConnections(size_t inlet) const;
-    std::set<DFNodeInlet> outboundConnections(size_t outlet) const;
-    std::set<DFConnection> connections(bool inbound = true, bool outbound = true);
-    static std::set<DFConnection> allConnections();
-    static size_t allConnections(std::vector<int> &srcNodeIds, std::vector<int> &srcOutlets, std::vector<int> &dstNodeIds, std::vector<int> &dstInlets);
-    bool isConnected(size_t outlet, DFNode *node, size_t inlet) const;
-    void connect(size_t outlet, DFNode *node, size_t inlet);
-    void disconnect(size_t outlet, DFNode *node, size_t inlet);
-    void disconnectInlet(size_t inlet);
-    void disconnectOutlet(size_t outlet);
-    void disconnect();
     static DFNode * byId(DFNodeID id);
     static DFNode * byId(DFNodeID id, DFNode *defaultIfNotFound);
     static void deleteById(DFNodeID id);
-    static void connect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet);
-    static void disconnect(DFNodeID srcNodeId, size_t srcOutlet, DFNodeID dstNodeId, size_t dstInlet);
     static std::vector<DFNodeID> nodeIds();
     static std::vector<DFNode*> nodes();
-    static void getInfo(DFNodeID id, std::string &cmd, int &inletCount, int &outletCount, int &x, int &y);
     virtual void tick();
     static void tickAll();
-    static void clearGraph();
-    static void loadGraph(std::string s);
-    static std::string saveGraph();
-    static void saveGraphToScene();
-    static void restoreGraphFromScene();
 
     virtual simInt getObjectHandle(const std::string &arg);
 
 protected:
-    void setNumInlets(size_t n);
-    void setNumOutlets(size_t n);
     virtual void onDataReceived(size_t inlet, DFData *data);
-    void sendData(size_t outlet, DFData *data);
 };
 
 #endif // DFNODE_H_INCLUDED

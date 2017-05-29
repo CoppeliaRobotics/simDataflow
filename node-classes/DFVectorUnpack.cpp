@@ -30,11 +30,11 @@
 #include "DFVectorUnpack.h"
 #include "DFScalar.h"
 
-DFVectorUnpack::DFVectorUnpack(const std::vector<std::string> &args)
-    : DFNode(args)
+DFVectorUnpack::DFVectorUnpack(QDataflowModelNode *node, const std::vector<std::string> &args)
+    : DFNode(node, args)
 {
-    setNumInlets(1);
-    setNumOutlets(3);
+    setInletCount(1);
+    setOutletCount(3);
 
     if(args.size() != 1)
         throw std::runtime_error("bad arg count");

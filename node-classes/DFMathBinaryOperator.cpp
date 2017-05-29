@@ -30,11 +30,11 @@
 #include "DFMathBinaryOperator.h"
 #include "DFData.h"
 
-DFMathBinaryOperator::DFMathBinaryOperator(const std::vector<std::string> &args)
-    : DFNode(args)
+DFMathBinaryOperator::DFMathBinaryOperator(QDataflowModelNode *node, const std::vector<std::string> &args)
+    : DFNode(node, args)
 {
-    setNumInlets(2);
-    setNumOutlets(1);
+    setInletCount(2);
+    setOutletCount(1);
 
     op_ = args[0];
     if(op_ != "+" && op_ != "-" && op_ != "*" && op_ != "/")

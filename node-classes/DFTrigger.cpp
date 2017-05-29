@@ -30,20 +30,20 @@
 #include "DFTrigger.h"
 #include "DFBang.h"
 
-DFTrigger::DFTrigger(const std::vector<std::string> &args)
-    : DFNode(args)
+DFTrigger::DFTrigger(QDataflowModelNode *node, const std::vector<std::string> &args)
+    : DFNode(node, args)
 {
-    setNumInlets(1);
-    setNumOutlets(args.size() - 1);
+    setInletCount(1);
+    setOutletCount(args.size() - 1);
 
     for(size_t i = 1; i < args.size(); i++)
-        validateArg(args[i]);
+        outletType.push_back(validateArg(args[i]));
 }
 
-void DFTrigger::validateArg(const std::string &a)
+char DFTrigger::validateArg(const std::string &a)
 {
-    if(a == "bang" || a == "b") return;
-    if(a == "anything" || a == "a") return;
+    if(a == "bang" || a == "b") return 'b';
+    if(a == "anything" || a == "a") return 'a';
     throw DFException(this, (boost::format("invalid argument: %s") % a).str());
 }
 
@@ -52,8 +52,8 @@ void DFTrigger::onDataReceived(size_t inlet, DFData *data)
     if(inlet == 0)
     {
         DFBang bang;
-        for(size_t i = argCount() - 1; i > 0; i--)
-            sendData(i - 1, arg(i)[0] == 'b' ? &bang : data);
+        for(size_t i = outletType.size() - 1; i > 0; i--)
+            sendData(i - 1, outletType[i] == 'b' ? &bang : data);
         return;
     }
 

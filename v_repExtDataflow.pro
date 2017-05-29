@@ -76,8 +76,7 @@ HEADERS += \
     data-classes/DFScalar.h \
     data-classes/DFString.h \
     data-classes/DFVector.h \
-    DFNodeFactory.h \
-    DFEventsListener.h \
+    DFModel.h \
     UIProxy.h \
     DFWindow.h \
     plugin.h \
@@ -103,8 +102,7 @@ SOURCES += \
     data-classes/DFScalar.cpp \
     data-classes/DFString.cpp \
     data-classes/DFVector.cpp \
-    DFNodeFactory.cpp \
-    DFEventsListener.cpp \
+    DFModel.cpp \
     UIProxy.cpp \
     DFWindow.cpp \
     debug.cpp \

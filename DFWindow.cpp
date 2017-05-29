@@ -28,7 +28,7 @@
 // -------------------------------------------------------------------
 
 #include "DFWindow.h"
-#include "DFNodeFactory.h"
+#include "DFModel.h"
 #include "v_repLib.h"
 #include "debug.h"
 
@@ -92,7 +92,7 @@ void DFWindow::restoreGeometryFromScene()
 
 void DFWindow::complete(QString txt, QStringList &completionList)
 {
-    BOOST_FOREACH(const std::string &className, nodeFactory.classNames())
+    BOOST_FOREACH(const std::string &className, dfModel->classNames())
     {
         QString className_ = QString::fromStdString(className);
         if(className_.startsWith(txt))

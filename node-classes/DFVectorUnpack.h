@@ -38,7 +38,7 @@ class DFVectorUnpack : public DFNode
 private:
 
 public:
-    DFVectorUnpack(const std::vector<std::string> &args);
+    DFVectorUnpack(QDataflowModelNode *node, const std::vector<std::string> &args);
     void onDataReceived(size_t inlet, DFData *data);
 };
 
