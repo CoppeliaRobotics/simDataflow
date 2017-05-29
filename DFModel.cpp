@@ -42,7 +42,7 @@
 
 #include <boost/tokenizer.hpp>
 
-extern DFWindow *mainWindow;
+DFModel *dfModel = 0L;
 
 DFModel::DFModel(QObject *parent)
     : QDataflowModel(parent), blockGraphChangeSignal(false)

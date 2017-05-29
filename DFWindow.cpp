@@ -34,6 +34,8 @@
 
 #include <boost/foreach.hpp>
 
+DFWindow *mainWindow = 0L;
+
 DFWindow::DFWindow(QWidget *parent)
     : QMainWindow(parent)
 {

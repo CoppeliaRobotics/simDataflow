@@ -51,4 +51,6 @@ public:
     QDataflowCanvas *canvas;
 };
 
+extern DFWindow *mainWindow;
+
 #endif // DFWINDOW_H_INCLUDED

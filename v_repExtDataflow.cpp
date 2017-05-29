@@ -37,8 +37,6 @@
 #include "stubs.h"
 
 simInt menuItemHandle[1];
-DFWindow *mainWindow = 0L;
-DFModel *dfModel = 0L;
 std::map<QDataflowModelNode*,DFNodeID> nodeId;
 std::map<DFNodeID,QDataflowModelNode*> nodeById;
 bool pendingSceneLoad = false;
