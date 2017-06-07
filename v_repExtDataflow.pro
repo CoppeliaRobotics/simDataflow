@@ -40,6 +40,7 @@ macx {
     QMAKE_MAC_SDK = macosx10.12
     DEFINES += MAC_VREP
     INCLUDEPATH += "/usr/local/Cellar/boost/1.63.0/include/"
+    INCLUDEPATH += "/usr/local/Cellar/boost/1.64.0_1/include/"
 }
 
 unix:!macx {
