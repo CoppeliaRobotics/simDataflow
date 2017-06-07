@@ -20,3 +20,6 @@ Makefile.Release
 debug
 release
 generated
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
