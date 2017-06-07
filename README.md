@@ -7,6 +7,6 @@
 3. Checkout and compile
 ```
 $ git clone --recursive https://github.com/fferri/v_repExtDataflow.git
-$ /path/to/Qt5.5.0/5.5/.../bin/qmake v_repExtDataflow.pro
-$ make
+$ cmake .
+$ cmake --build .
 ```
