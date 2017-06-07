@@ -17,7 +17,6 @@ moc_*.cpp
 Makefile
 Makefile.Debug
 Makefile.Release
-simExtDataflow.lua
 debug
 release
 generated
