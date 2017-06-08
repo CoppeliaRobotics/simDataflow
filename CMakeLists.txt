@@ -14,7 +14,7 @@ find_package(Qt5PrintSupport REQUIRED)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 find_package(VREP REQUIRED)
 
-include_directories(${VREP_ROOT}/programming/include)
+include_directories(${VREP_INCLUDE})
 include_directories(${CMAKE_BINARY_DIR}/generated)
 include_directories(${CMAKE_SOURCE_DIR}/node-classes)
 include_directories(${CMAKE_SOURCE_DIR}/data-classes)
@@ -48,7 +48,7 @@ set(SOURCES
     external/QDataflowCanvas/qdataflowmodel.cpp
     external/v_repPlusPlus/Plugin.cpp
 )
-add_library(v_repExtDataflow SHARED ${SOURCES} ${CMAKE_BINARY_DIR}/generated/stubs.cpp "${VREP_ROOT}/programming/common/v_repLib.cpp")
+add_library(v_repExtDataflow SHARED ${SOURCES} ${CMAKE_BINARY_DIR}/generated/stubs.cpp "${VREP_COMMON}/v_repLib.cpp")
 
 if(WIN32)
     set(SHLWAPI shlwapi)
