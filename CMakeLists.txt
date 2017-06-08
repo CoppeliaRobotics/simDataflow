@@ -49,11 +49,4 @@ set(SOURCES
     external/v_repPlusPlus/Plugin.cpp
 )
 add_library(v_repExtDataflow SHARED ${SOURCES} ${CMAKE_BINARY_DIR}/generated/stubs.cpp "${VREP_COMMON}/v_repLib.cpp")
-
-if(WIN32)
-    set(SHLWAPI shlwapi)
-else()
-    set(SHLWAPI)
-endif()
-
-target_link_libraries(v_repExtDataflow ${Boost_LIBRARIES} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport ${SHLWAPI})
+target_link_libraries(v_repExtDataflow ${Boost_LIBRARIES} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport ${VREP_LIBRARIES})
