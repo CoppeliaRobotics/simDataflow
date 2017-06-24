@@ -24,9 +24,7 @@ include_directories(${CMAKE_SOURCE_DIR}/external)
 include_directories(${CMAKE_SOURCE_DIR}/external/QDataflowCanvas)
 include_directories(${Boost_INCLUDE_DIRS})
 
-add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/generated/stubs.cpp ${CMAKE_BINARY_DIR}/generated/stubs.h ${CMAKE_BINARY_DIR}/generated/lua_calltips.cpp
-    COMMAND python ${CMAKE_SOURCE_DIR}/external/v_repStubsGen/generate.py --xml-file ${CMAKE_SOURCE_DIR}/callbacks.xml --lua-file ${CMAKE_SOURCE_DIR}/simExtDataflow.lua --gen-all ${CMAKE_BINARY_DIR}/generated
-    DEPENDS ${CMAKE_SOURCE_DIR}/callbacks.xml)
+vrep_generate_stubs(${CMAKE_BINARY_DIR}/generated XML_FILE ${CMAKE_SOURCE_DIR}/callbacks.xml LUA_FILE ${CMAKE_SOURCE_DIR}/simExtDataflow.lua)
 
 set(SOURCES
     v_repExtDataflow.cpp
@@ -50,5 +48,5 @@ set(SOURCES
     external/QDataflowCanvas/qdataflowmodel.cpp
     external/v_repPlusPlus/Plugin.cpp
 )
-add_library(v_repExtDataflow SHARED ${SOURCES} ${CMAKE_BINARY_DIR}/generated/stubs.cpp "${VREP_COMMON}/v_repLib.cpp")
+add_library(v_repExtDataflow SHARED ${SOURCES} ${CMAKE_BINARY_DIR}/generated/stubs.cpp "${VREP_EXPORTED_SOURCES}")
 target_link_libraries(v_repExtDataflow ${Boost_LIBRARIES} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport ${VREP_LIBRARIES})
