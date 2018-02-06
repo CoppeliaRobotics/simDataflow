@@ -1,5 +1,4 @@
 #include <map>
-#include "v_repExtDataflow.h"
 #include "v_repPlusPlus/Plugin.h"
 #include "DFModel.h"
 #include "DFWindow.h"
@@ -150,4 +149,4 @@ public:
     }
 };
 
-VREP_PLUGIN("Dataflow", 1, Plugin)
+VREP_PLUGIN(PLUGIN_NAME, PLUGIN_VERSION, Plugin)
