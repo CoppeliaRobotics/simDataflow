@@ -99,11 +99,10 @@ public:
         initInUiThread();
     }
 
-    void onInstancePass(bool objectsErased, bool objectsCreated, bool modelLoaded, bool sceneLoaded, bool undoCalled, bool redoCalled, bool sceneSwitched, bool editModeActive, bool objectsScaled, bool selectionStateChanged, bool keyPressed, bool simulationStarted, bool simulationEnded)
+    void onInstancePass(vrep::InstancePassFlags &flags, bool first)
     {
-        if(firstInstancePass)
+        if(first)
         {
-            firstInstancePass = false;
             initInSimThread();
         }
 
@@ -146,9 +145,6 @@ public:
             simSetModuleMenuItemState(menuItemHandle[0], mainWindow->isVisible() ? 3 : 1, "Show dataflow graph");
         }
     }
-
-private:
-    bool firstInstancePass = true;
 };
 
 VREP_PLUGIN(PLUGIN_NAME, PLUGIN_VERSION, Plugin)
