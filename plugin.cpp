@@ -97,6 +97,9 @@ public:
     void onStart()
     {
         initInUiThread();
+
+        simSetModuleInfo(PLUGIN_NAME, 0, "Dataflow Plugin", 0);
+        simSetModuleInfo(PLUGIN_NAME, 1, __DATE__, 0);
     }
 
     void onInstancePass(vrep::InstancePassFlags &flags, bool first)
