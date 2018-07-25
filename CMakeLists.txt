@@ -13,18 +13,21 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5PrintSupport REQUIRED)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+set(CMAKE_MODULE_PATH
+    ${CMAKE_MODULE_PATH}
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/CoppeliaRobotics-modules)
 find_package(VREP 3.5.0 REQUIRED)
 
 include_directories(${VREP_INCLUDE})
-include_directories(${CMAKE_BINARY_DIR}/generated)
-include_directories(${CMAKE_SOURCE_DIR}/node-classes)
-include_directories(${CMAKE_SOURCE_DIR}/data-classes)
-include_directories(${CMAKE_SOURCE_DIR}/external)
-include_directories(${CMAKE_SOURCE_DIR}/external/QDataflowCanvas)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/generated)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/node-classes)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/data-classes)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/QDataflowCanvas)
 include_directories(${Boost_INCLUDE_DIRS})
 
-vrep_generate_stubs(${CMAKE_BINARY_DIR}/generated XML_FILE ${CMAKE_SOURCE_DIR}/callbacks.xml LUA_FILE ${CMAKE_SOURCE_DIR}/simExtDataflow.lua)
+vrep_generate_stubs(${CMAKE_CURRENT_BINARY_DIR}/generated XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.xml LUA_FILE ${CMAKE_CURRENT_SOURCE_DIR}/simExtDataflow.lua)
 
 set(SOURCES
     v_repExtDataflow.cpp
@@ -48,5 +51,5 @@ set(SOURCES
     external/QDataflowCanvas/qdataflowmodel.cpp
     external/v_repPlusPlus/Plugin.cpp
 )
-add_library(v_repExtDataflow SHARED ${SOURCES} ${CMAKE_BINARY_DIR}/generated/stubs.cpp "${VREP_EXPORTED_SOURCES}")
+add_library(v_repExtDataflow SHARED ${SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/generated/stubs.cpp "${VREP_EXPORTED_SOURCES}")
 target_link_libraries(v_repExtDataflow ${Boost_LIBRARIES} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport ${VREP_LIBRARIES})
