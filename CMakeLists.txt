@@ -32,7 +32,7 @@ vrep_generate_stubs(${CMAKE_CURRENT_BINARY_DIR}/generated XML_FILE ${CMAKE_CURRE
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 set(SOURCES
-    v_repExtDataflow.cpp
+    plugin.cpp
     debug.cpp
     DFData.cpp
     DFModel.cpp
