@@ -74,7 +74,7 @@ void DFModel::loadGraph(std::string s)
             if(dfnode)
             {
                 idmap[id] = dfnode->id();
-                DBG << "NODE " << dfnode->id() << " " << x << " " << y << " " << dfnode->node()->text().toStdString() << std::endl;
+                DEBUG_OUT << "NODE " << dfnode->id() << " " << x << " " << y << " " << dfnode->node()->text().toStdString() << std::endl;
                 numNodes++;
             }
         }
@@ -84,7 +84,7 @@ void DFModel::loadGraph(std::string s)
             ss >> srcId >> srcOutlet >> dstId >> dstInlet >> stop;
             srcId = idmap[srcId];
             dstId = idmap[dstId];
-            DBG << "CONNECTION " << srcId << " " << srcOutlet << " " << dstId << " " << dstInlet << std::endl;
+            DEBUG_OUT << "CONNECTION " << srcId << " " << srcOutlet << " " << dstId << " " << dstInlet << std::endl;
             DFNode *src = DFNode::byId(srcId);
             DFNode *dst = DFNode::byId(dstId);
             connect(src->node(), srcOutlet, dst->node(), dstInlet);
@@ -97,7 +97,7 @@ void DFModel::loadGraph(std::string s)
     if(!blockGraphChangeSignal)
         emit graphChanged();
 
-    DBG << "loaded " << numNodes << " nodes and " << numConnections << " connections" << std::endl;
+    DEBUG_OUT << "loaded " << numNodes << " nodes and " << numConnections << " connections" << std::endl;
 }
 
 std::string DFModel::saveGraph()
@@ -112,13 +112,13 @@ std::string DFModel::saveGraph()
         QDataflowMetaObject *meta = node->dataflowMetaObject();
         if(!meta)
         {
-            DBG << "error: node " << (void*)node << " has no dataflowMetaObject" << std::endl;
+            DEBUG_OUT << "error: node " << (void*)node << " has no dataflowMetaObject" << std::endl;
             continue;
         }
         DFNode *dfnode = dynamic_cast<DFNode*>(node->dataflowMetaObject());
         if(!dfnode)
         {
-            DBG << "error: node " << (void*)node << " has alien dataflowMetaObject" << std::endl;
+            DEBUG_OUT << "error: node " << (void*)node << " has alien dataflowMetaObject" << std::endl;
             continue;
         }
         QPoint pos = node->pos();
@@ -134,21 +134,21 @@ std::string DFModel::saveGraph()
         QDataflowMetaObject *modst = d->node()->dataflowMetaObject();
         if(!mosrc || !modst)
         {
-            DBG << "error: connection " << (void*)conn << " source/dest node " << (void*)s->node() << "/" << (void*)d->node() << " has no dataflowMetaObject (" << (void*)mosrc << "/" << (void*)modst << ")" << std::endl;
+            DEBUG_OUT << "error: connection " << (void*)conn << " source/dest node " << (void*)s->node() << "/" << (void*)d->node() << " has no dataflowMetaObject (" << (void*)mosrc << "/" << (void*)modst << ")" << std::endl;
             continue;
         }
         DFNode *src = dynamic_cast<DFNode*>(s->node()->dataflowMetaObject());
         DFNode *dst = dynamic_cast<DFNode*>(d->node()->dataflowMetaObject());
         if(!src || !dst)
         {
-            DBG << "error: connection " << (void*)conn << " source/dest node " << (void*)s->node() << "/" << (void*)d->node() << " has alien dataflowMetaObject (" << (void*)src << "/" << (void*)dst << ")" << std::endl;
+            DEBUG_OUT << "error: connection " << (void*)conn << " source/dest node " << (void*)s->node() << "/" << (void*)d->node() << " has alien dataflowMetaObject (" << (void*)src << "/" << (void*)dst << ")" << std::endl;
             continue;
         }
         ss << "CONNECTION " << src->id() << " " << s->index() << " " << dst->id() << " " << d->index() << " " << ";" << std::endl;
         numConnections++;
     }
 
-    DBG << "saved " << numNodes << " nodes and " << numConnections << " connections" << std::endl;
+    DEBUG_OUT << "saved " << numNodes << " nodes and " << numConnections << " connections" << std::endl;
 
     return ss.str();
 }
@@ -164,7 +164,7 @@ void DFModel::clearGraph()
 void DFModel::saveGraphToScene()
 {
     std::string graph = saveGraph();
-    DBG << "new graph:" << std::endl << graph;
+    DEBUG_OUT << "new graph:" << std::endl << graph;
     simWriteCustomDataBlock(sim_handle_scene, "Dataflow.Graph", graph.c_str(), graph.length());
 }
 
@@ -175,7 +175,7 @@ void DFModel::restoreGraphFromScene()
     simChar *data = simReadCustomDataBlock(sim_handle_scene, "Dataflow.Graph", &size);
     if(data)
     {
-        DBG << "found a Dataflow.Graph block" << std::endl;
+        DEBUG_OUT << "found a Dataflow.Graph block" << std::endl;
         std::string graph(data, size);
         try
         {
@@ -183,19 +183,19 @@ void DFModel::restoreGraphFromScene()
         }
         catch(std::exception &ex)
         {
-            DBG << "failed to restore graph: " << ex.what() << std::endl;
+            DEBUG_OUT << "failed to restore graph: " << ex.what() << std::endl;
             clearGraph();
         }
     }
     else
     {
-        DBG << "the scene does not have a Dataflow.Graph block" << std::endl;
+        DEBUG_OUT << "the scene does not have a Dataflow.Graph block" << std::endl;
     }
 }
 
 QDataflowModelNode * DFModel::newNode(QPoint pos, QString text, int inletCount, int outletCount)
 {
-    DBG << std::endl;
+    DEBUG_OUT << std::endl;
 
     QDataflowModelNode *node = QDataflowModel::newNode(pos, text, inletCount, outletCount);
     node->setValid(false);
@@ -205,7 +205,7 @@ QDataflowModelNode * DFModel::newNode(QPoint pos, QString text, int inletCount, 
         try
         {
             DFNode *dfnode = createDFMetaObject(node, text.toStdString());
-            DBG << "created DFNode " << dfnode->id() << " text='" << text.toStdString() << "'" << std::endl;
+            DEBUG_OUT << "created DFNode " << dfnode->id() << " text='" << text.toStdString() << "'" << std::endl;
         }
         catch(std::exception &ex) {}
     }
@@ -215,7 +215,7 @@ QDataflowModelNode * DFModel::newNode(QPoint pos, QString text, int inletCount, 
 
 void DFModel::onNodeAdded(QDataflowModelNode *node)
 {
-    DBG << std::endl;
+    DEBUG_OUT << std::endl;
 
     if(!blockGraphChangeSignal)
         emit graphChanged();
@@ -223,7 +223,7 @@ void DFModel::onNodeAdded(QDataflowModelNode *node)
 
 void DFModel::onNodeRemoved(QDataflowModelNode *node)
 {
-    DBG << std::endl;
+    DEBUG_OUT << std::endl;
 
     if(!blockGraphChangeSignal)
         emit graphChanged();
@@ -231,7 +231,7 @@ void DFModel::onNodeRemoved(QDataflowModelNode *node)
 
 void DFModel::onNodeTextChanged(QDataflowModelNode *node, QString text)
 {
-    DBG << "node=" << (void*)node << " text='" << node->text().toStdString() << "'" << std::endl;
+    DEBUG_OUT << "node=" << (void*)node << " text='" << node->text().toStdString() << "'" << std::endl;
 
     DFNode *dfnode = 0L;
 
@@ -240,11 +240,11 @@ void DFModel::onNodeTextChanged(QDataflowModelNode *node, QString text)
         try
         {
             dfnode = createDFMetaObject(node, node->text().toStdString());
-            DBG << "created DFNode " << (void*)dfnode << " id=" << dfnode->id() << " text='" << node->text().toStdString() << "' node=" << (void*)dfnode->node() << " node.meta=" << (void*)node->dataflowMetaObject() << std::endl;
+            DEBUG_OUT << "created DFNode " << (void*)dfnode << " id=" << dfnode->id() << " text='" << node->text().toStdString() << "' node=" << (void*)dfnode->node() << " node.meta=" << (void*)node->dataflowMetaObject() << std::endl;
         }
         catch(std::runtime_error &ex)
         {
-            DBG << "creation error: " << ex.what() << std::endl;
+            DEBUG_OUT << "creation error: " << ex.what() << std::endl;
             simAddStatusbarMessage((boost::format("Dataflow: object creation error: %s") % ex.what()).str().c_str());
         }
     }
@@ -263,7 +263,7 @@ void DFModel::onNodeTextChanged(QDataflowModelNode *node, QString text)
 
 void DFModel::onConnectionAdded(QDataflowModelConnection *conn)
 {
-    DBG << std::endl;
+    DEBUG_OUT << std::endl;
 
     if(!blockGraphChangeSignal)
         emit graphChanged();
@@ -271,7 +271,7 @@ void DFModel::onConnectionAdded(QDataflowModelConnection *conn)
 
 void DFModel::onConnectionRemoved(QDataflowModelConnection *conn)
 {
-    DBG << std::endl;
+    DEBUG_OUT << std::endl;
 
     if(!blockGraphChangeSignal)
         emit graphChanged();
@@ -279,7 +279,7 @@ void DFModel::onConnectionRemoved(QDataflowModelConnection *conn)
 
 void DFModel::onGraphChanged()
 {
-    DBG << std::endl;
+    DEBUG_OUT << std::endl;
 
     saveGraphToScene();
 }
