@@ -102,6 +102,12 @@ public:
         simSetModuleInfo(PLUGIN_NAME, 1, BUILD_DATE, 0);
     }
 
+    void onEnd()
+    {
+        UI_THREAD = NULL;
+        SIM_THREAD = NULL;
+    }
+
     void onInstancePass(vrep::InstancePassFlags &flags, bool first)
     {
         if(first)
