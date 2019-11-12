@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 2.8.11)
-project(v_repExtDataflow)
+project(simExtDataflow)
 
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_MACOSX_RPATH 1)
-
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
 find_package(Boost REQUIRED)
 find_package(Qt5Core REQUIRED)
@@ -13,13 +12,20 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5PrintSupport REQUIRED)
 
+if(NOT LIBPLUGIN_DIR)
+    if(DEFINED ENV{COPPELIASIM_ROOT_DIR})
+        set(LIBPLUGIN_DIR $ENV{COPPELIASIM_ROOT_DIR}/programming/libPlugin)
+    else()
+        set(LIBPLUGIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libPlugin)
+    endif()
+endif()
 set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/CoppeliaRobotics-modules)
-find_package(VREP 3.5.0 REQUIRED)
+    ${LIBPLUGIN_DIR}/cmake)
+find_package(CoppeliaSim 4.0.0.0 REQUIRED)
 
-include_directories(${VREP_INCLUDE})
+include_directories(${COPPELIASIM_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/generated)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/node-classes)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/data-classes)
@@ -27,7 +33,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/QDataflowCanvas)
 include_directories(${Boost_INCLUDE_DIRS})
 
-vrep_generate_stubs(${CMAKE_CURRENT_BINARY_DIR}/generated XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.xml LUA_FILE ${CMAKE_CURRENT_SOURCE_DIR}/simExtDataflow.lua)
+coppeliasim_generate_stubs(${CMAKE_CURRENT_BINARY_DIR}/generated XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.xml LUA_FILE ${CMAKE_CURRENT_SOURCE_DIR}/simExtDataflow.lua)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -51,7 +57,7 @@ set(SOURCES
     node-classes/DFVectorUnpack.cpp
     external/QDataflowCanvas/qdataflowcanvas.cpp
     external/QDataflowCanvas/qdataflowmodel.cpp
-    external/v_repPlusPlus/Plugin.cpp
+    ${COPPELIASIM_EXPORTED_SOURCES}
 )
-add_library(v_repExtDataflow SHARED ${SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/generated/stubs.cpp "${VREP_EXPORTED_SOURCES}")
-target_link_libraries(v_repExtDataflow ${Boost_LIBRARIES} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport ${VREP_LIBRARIES})
+add_library(simExtDataflow SHARED ${SOURCES})
+target_link_libraries(simExtDataflow ${Boost_LIBRARIES} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport ${COPPELIASIM_LIBRARIES})

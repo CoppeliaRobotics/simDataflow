@@ -1,5 +1,5 @@
 #include <map>
-#include "v_repPlusPlus/Plugin.h"
+#include "simPlusPlus/Plugin.h"
 #include "DFModel.h"
 #include "DFWindow.h"
 #include "DFNode.h"
@@ -91,7 +91,7 @@ void initInSimThread()
     mainWindow->canvas->setModel(dfModel);
 }
 
-class Plugin : public vrep::Plugin
+class Plugin : public sim::Plugin
 {
 public:
     void onStart()
@@ -108,7 +108,7 @@ public:
         SIM_THREAD = NULL;
     }
 
-    void onInstancePass(vrep::InstancePassFlags &flags, bool first)
+    void onInstancePass(sim::InstancePassFlags &flags, bool first)
     {
         if(first)
         {
@@ -156,4 +156,4 @@ public:
     }
 };
 
-VREP_PLUGIN(PLUGIN_NAME, PLUGIN_VERSION, Plugin)
+SIM_PLUGIN(PLUGIN_NAME, PLUGIN_VERSION, Plugin)

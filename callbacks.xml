@@ -2,7 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="callbacks.xsl"?>
 
 <plugin name="Dataflow" short-name="DF" author="federico.ferri.it@gmail.com">
-    <description>Dataflow programming core component for V-REP</description>
+    <description>Dataflow programming core component</description>
     <command name="add">
         <description>Add a node.</description>
         <params>
