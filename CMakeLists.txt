@@ -61,3 +61,6 @@ set(SOURCES
 )
 add_library(simExtDataflow SHARED ${SOURCES})
 target_link_libraries(simExtDataflow ${Boost_LIBRARIES} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport ${COPPELIASIM_LIBRARIES})
+
+install(TARGETS simExtDataflow DESTINATION ${COPPELIASIM_PLUGINS_DIR})
+
