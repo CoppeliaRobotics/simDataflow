@@ -98,8 +98,8 @@ public:
     {
         initInUiThread();
 
-        simSetModuleInfo(PLUGIN_NAME, 0, "Dataflow Plugin", 0);
-        simSetModuleInfo(PLUGIN_NAME, 1, BUILD_DATE, 0);
+        setExtVersion("Dataflow Plugin");
+        setBuildDate(BUILD_DATE);
     }
 
     void onEnd()
