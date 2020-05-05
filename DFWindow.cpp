@@ -53,13 +53,13 @@ void DFWindow::restoreGeometryFromScene()
     simChar *data = simReadCustomDataBlock(sim_handle_scene, "Dataflow.Window.Geometry", &size);
     if(data)
     {
-        DEBUG_OUT << "found a Dataflow.Window.Geometry block" << std::endl;
+        log(sim_verbosity_debug, "found a Dataflow.Window.Geometry block");
         simInt *d = (simInt*)data;
         setGeometry(QRect(d[0], d[1], d[2], d[3]));
     }
     else
     {
-        DEBUG_OUT << "the scene does not have a Dataflow.Window.Geometry block" << std::endl;
+        log(sim_verbosity_debug, "the scene does not have a Dataflow.Window.Geometry block");
     }
 }
 

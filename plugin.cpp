@@ -66,7 +66,6 @@ void getNodeInfo(SScriptCallBack *p, const char *cmd, getNodeInfo_in *in, getNod
 void initInUiThread()
 {
     uiThread();
-    DEBUG_OUT << std::endl;
 
     if(!registerScriptStuff())
         throw std::runtime_error("failed to register script stuff");
@@ -74,7 +73,7 @@ void initInUiThread()
     simAddModuleMenuEntry("", 1, &menuItemHandle[0]);
     simSetModuleMenuItemState(menuItemHandle[0], 1, "Show dataflow graph");
 
-    DEBUG_OUT << "create main window..." << std::endl;
+    log(sim_verbosity_debug, "create main window...");
     mainWindow = new DFWindow(reinterpret_cast<QWidget*>(simGetMainWindow(1)));
 }
 
@@ -84,10 +83,10 @@ void initInSimThread()
 
     simThread();
 
-    DEBUG_OUT << "init DFModel..." << std::endl;
+    log(sim_verbosity_debug, "init DFModel...");
     dfModel = new DFModel();
 
-    DEBUG_OUT << "set QDataflowCanvas model..." << std::endl;
+    log(sim_verbosity_debug, "set QDataflowCanvas model...");
     mainWindow->canvas->setModel(dfModel);
 }
 
@@ -134,14 +133,13 @@ public:
 
     void onInstanceSwitch(int sceneID)
     {
-        DEBUG_OUT << "sceneID=" << sceneID << std::endl;
+        log(sim_verbosity_debug, boost::format("onInstanceSwitch: sceneID=%d") % sceneID);
         dfModel->restoreGraphFromScene();
         mainWindow->restoreGeometryFromScene();
     }
 
     void onSceneLoaded()
     {
-        DEBUG_OUT << std::endl;
         pendingSceneLoad = true;
     }
 
