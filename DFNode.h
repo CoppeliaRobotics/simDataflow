@@ -1,8 +1,7 @@
 #ifndef DFNODE_H_INCLUDED
 #define DFNODE_H_INCLUDED
 
-#include "simLib.h"
-#include "debug.h"
+#include "stubs.h"
 #include "DFData.h"
 #include "qdataflowmodel.h"
 #include <sstream>

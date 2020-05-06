@@ -1,7 +1,6 @@
 #include "DFWindow.h"
 #include "DFModel.h"
-#include "simLib.h"
-#include "debug.h"
+#include "stubs.h"
 
 #include <boost/foreach.hpp>
 
