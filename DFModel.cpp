@@ -74,7 +74,7 @@ void DFModel::loadGraph(std::string s)
             if(dfnode)
             {
                 idmap[id] = dfnode->id();
-                log(sim_verbosity_debug, boost::format("NODE %d %d %d '%s'") % dfnode->id() % x % y % dfnode->node()->text().toStdString());
+                sim::addLog(sim_verbosity_debug, "NODE %d %d %d '%s'", dfnode->id(), x, y, dfnode->node()->text().toStdString());
                 numNodes++;
             }
         }
@@ -84,7 +84,7 @@ void DFModel::loadGraph(std::string s)
             ss >> srcId >> srcOutlet >> dstId >> dstInlet >> stop;
             srcId = idmap[srcId];
             dstId = idmap[dstId];
-            log(sim_verbosity_debug, boost::format("CONNECTION %d.%d -> %d.%d") % srcId % srcOutlet % dstId % dstInlet);
+            sim::addLog(sim_verbosity_debug, "CONNECTION %d.%d -> %d.%d", srcId, srcOutlet, dstId, dstInlet);
             DFNode *src = DFNode::byId(srcId);
             DFNode *dst = DFNode::byId(dstId);
             connect(src->node(), srcOutlet, dst->node(), dstInlet);
@@ -97,7 +97,7 @@ void DFModel::loadGraph(std::string s)
     if(!blockGraphChangeSignal)
         emit graphChanged();
 
-    log(sim_verbosity_debug, boost::format("loaded %d nodes and %d connections") % numNodes % numConnections);
+    sim::addLog(sim_verbosity_debug, "loaded %d nodes and %d connections", numNodes, numConnections);
 }
 
 std::string DFModel::saveGraph()
@@ -112,13 +112,13 @@ std::string DFModel::saveGraph()
         QDataflowMetaObject *meta = node->dataflowMetaObject();
         if(!meta)
         {
-            log(sim_verbosity_debug, boost::format("error: node %x has no dataflowMetaObject") % node);
+            sim::addLog(sim_verbosity_debug, "error: node %x has no dataflowMetaObject", node);
             continue;
         }
         DFNode *dfnode = dynamic_cast<DFNode*>(node->dataflowMetaObject());
         if(!dfnode)
         {
-            log(sim_verbosity_debug, boost::format("error: node %x has alien dataflowMetaObject") % node);
+            sim::addLog(sim_verbosity_debug, "error: node %x has alien dataflowMetaObject", node);
             continue;
         }
         QPoint pos = node->pos();
@@ -134,21 +134,21 @@ std::string DFModel::saveGraph()
         QDataflowMetaObject *modst = d->node()->dataflowMetaObject();
         if(!mosrc || !modst)
         {
-            log(sim_verbosity_debug, boost::format("error: connection %x source/dest node %x/%x has no dataflowMetaObject (%x/%x)") % conn % s->node() % d->node() % mosrc % modst);
+            sim::addLog(sim_verbosity_debug, "error: connection %x source/dest node %x/%x has no dataflowMetaObject (%x/%x)", conn, s->node(), d->node(), mosrc, modst);
             continue;
         }
         DFNode *src = dynamic_cast<DFNode*>(s->node()->dataflowMetaObject());
         DFNode *dst = dynamic_cast<DFNode*>(d->node()->dataflowMetaObject());
         if(!src || !dst)
         {
-            log(sim_verbosity_debug, boost::format("error: connection %x source/dest node %x/%x has alien dataflowMetaObject (%x/%x)") % conn % s->node() % d->node() % src % dst);
+            sim::addLog(sim_verbosity_debug, "error: connection %x source/dest node %x/%x has alien dataflowMetaObject (%x/%x)", conn, s->node(), d->node(), src, dst);
             continue;
         }
         ss << "CONNECTION " << src->id() << " " << s->index() << " " << dst->id() << " " << d->index() << " " << ";" << std::endl;
         numConnections++;
     }
 
-    log(sim_verbosity_debug, boost::format("saved %d nodes and %d connections") % numNodes % numConnections);
+    sim::addLog(sim_verbosity_debug, "saved %d nodes and %d connections", numNodes, numConnections);
 
     return ss.str();
 }
@@ -164,7 +164,7 @@ void DFModel::clearGraph()
 void DFModel::saveGraphToScene()
 {
     std::string graph = saveGraph();
-    log(sim_verbosity_debug, "new graph:\n" + graph);
+    sim::addLog(sim_verbosity_debug, "new graph:\n" + graph);
     simWriteCustomDataBlock(sim_handle_scene, "Dataflow.Graph", graph.c_str(), graph.length());
 }
 
@@ -175,7 +175,7 @@ void DFModel::restoreGraphFromScene()
     simChar *data = simReadCustomDataBlock(sim_handle_scene, "Dataflow.Graph", &size);
     if(data)
     {
-        log(sim_verbosity_debug, "found a Dataflow.Graph block");
+        sim::addLog(sim_verbosity_debug, "found a Dataflow.Graph block");
         std::string graph(data, size);
         try
         {
@@ -183,13 +183,13 @@ void DFModel::restoreGraphFromScene()
         }
         catch(std::exception &ex)
         {
-            log(sim_verbosity_debug, boost::format("failed to restore graph: %s") % ex.what());
+            sim::addLog(sim_verbosity_debug, "failed to restore graph: %s", ex.what());
             clearGraph();
         }
     }
     else
     {
-        log(sim_verbosity_debug, "the scene does not have a Dataflow.Graph block");
+        sim::addLog(sim_verbosity_debug, "the scene does not have a Dataflow.Graph block");
     }
 }
 
@@ -203,7 +203,7 @@ QDataflowModelNode * DFModel::newNode(QPoint pos, QString text, int inletCount, 
         try
         {
             DFNode *dfnode = createDFMetaObject(node, text.toStdString());
-            log(sim_verbosity_debug, boost::format("created DFNode %d text='%s'") % dfnode->id() % text.toStdString());
+            sim::addLog(sim_verbosity_debug, "created DFNode %d text='%s'", dfnode->id(), text.toStdString());
         }
         catch(std::exception &ex) {}
     }
@@ -225,7 +225,7 @@ void DFModel::onNodeRemoved(QDataflowModelNode *node)
 
 void DFModel::onNodeTextChanged(QDataflowModelNode *node, QString text)
 {
-    log(sim_verbosity_debug, boost::format("node=%x text='%s'") % node % node->text().toStdString());
+    sim::addLog(sim_verbosity_debug, "node=%x text='%s'", node, node->text().toStdString());
 
     DFNode *dfnode = 0L;
 
@@ -234,12 +234,11 @@ void DFModel::onNodeTextChanged(QDataflowModelNode *node, QString text)
         try
         {
             dfnode = createDFMetaObject(node, node->text().toStdString());
-            log(sim_verbosity_debug, boost::format("created DFNode %x id=%d text='%s' node=%x node.meta=%x") % dfnode % dfnode->id() % node->text().toStdString() % dfnode->node() % node->dataflowMetaObject());
+            sim::addLog(sim_verbosity_debug, "created DFNode %x id=%d text='%s' node=%x node.meta=%x", dfnode, dfnode->id(), node->text().toStdString(), dfnode->node(), node->dataflowMetaObject());
         }
         catch(std::runtime_error &ex)
         {
-            log(sim_verbosity_debug, boost::format("creation error: %s") % ex.what());
-            simAddStatusbarMessage((boost::format("Dataflow: object creation error: %s") % ex.what()).str().c_str());
+            sim::addLog(sim_verbosity_debug, "creation error: %s", ex.what());
         }
     }
 

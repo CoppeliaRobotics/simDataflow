@@ -49,7 +49,7 @@ public:
 
     void onInstanceSwitch(int sceneID)
     {
-        log(sim_verbosity_debug, boost::format("onInstanceSwitch: sceneID=%d") % sceneID);
+        sim::addLog(sim_verbosity_debug, "onInstanceSwitch: sceneID=%d", sceneID);
         dfModel->restoreGraphFromScene();
         mainWindow->restoreGeometryFromScene();
     }
@@ -131,7 +131,7 @@ public:
         simAddModuleMenuEntry("", 1, &menuItemHandle[0]);
         simSetModuleMenuItemState(menuItemHandle[0], 1, "Show dataflow graph");
 
-        log(sim_verbosity_debug, "create main window...");
+        sim::addLog(sim_verbosity_debug, "create main window...");
         mainWindow = new DFWindow(reinterpret_cast<QWidget*>(simGetMainWindow(1)));
     }
 
@@ -141,10 +141,10 @@ public:
 
         simThread();
 
-        log(sim_verbosity_debug, "init DFModel...");
+        sim::addLog(sim_verbosity_debug, "init DFModel...");
         dfModel = new DFModel();
 
-        log(sim_verbosity_debug, "set QDataflowCanvas model...");
+        sim::addLog(sim_verbosity_debug, "set QDataflowCanvas model...");
         mainWindow->canvas->setModel(dfModel);
     }
 
