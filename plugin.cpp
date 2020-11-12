@@ -3,6 +3,7 @@
 #include "DFModel.h"
 #include "DFWindow.h"
 #include "DFNode.h"
+#include "config.h"
 #include "plugin.h"
 #include "stubs.h"
 
