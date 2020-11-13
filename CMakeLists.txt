@@ -38,13 +38,11 @@ if(GIT_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
     endif()
 endif()
 
-include_directories(${COPPELIASIM_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/generated)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/node-classes)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/data-classes)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/QDataflowCanvas)
-include_directories(${Boost_INCLUDE_DIRS})
 add_definitions(-DQT_COMPIL)
 
 coppeliasim_generate_stubs(${CMAKE_CURRENT_BINARY_DIR}/generated XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.xml LUA_FILE ${CMAKE_CURRENT_SOURCE_DIR}/simExtDataflow.lua)
@@ -70,10 +68,6 @@ set(SOURCES
     node-classes/DFVectorUnpack.cpp
     external/QDataflowCanvas/qdataflowcanvas.cpp
     external/QDataflowCanvas/qdataflowmodel.cpp
-    ${COPPELIASIM_EXPORTED_SOURCES}
 )
-add_library(simExtDataflow SHARED ${SOURCES})
-target_link_libraries(simExtDataflow ${Boost_LIBRARIES} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport ${COPPELIASIM_LIBRARIES})
-
-install(TARGETS simExtDataflow DESTINATION ${COPPELIASIM_PLUGINS_DIR})
-
+coppeliasim_add_plugin(simExtDataflow SOURCES ${SOURCES})
+target_link_libraries(simExtDataflow Boost::boost Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport)
