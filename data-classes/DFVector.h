@@ -9,7 +9,7 @@
 class DFVector : public DFData
 {
 public:
-    simFloat data[3];
+    float data[3];
 
     DFVector operator=(const DFVector &o);
 

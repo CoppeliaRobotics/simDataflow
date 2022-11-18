@@ -11,7 +11,7 @@ DFMathBinaryOperator::DFMathBinaryOperator(QDataflowModelNode *node, const std::
     if(op_ != "+" && op_ != "-" && op_ != "*" && op_ != "/")
         throw std::runtime_error((boost::format("invalid operator: %s") % op_).str());
 
-    state_.data = args.size() == 2 ? boost::lexical_cast<simFloat>(args[1]) : 0;
+    state_.data = args.size() == 2 ? boost::lexical_cast<float>(args[1]) : 0;
 }
 
 void DFMathBinaryOperator::op(DFScalar &x, const DFScalar &y)

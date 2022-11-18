@@ -10,7 +10,7 @@ DFVectorPack::DFVectorPack(QDataflowModelNode *node, const std::vector<std::stri
         throw std::runtime_error("bad arg count");
 
     for(int i = 0; i < 3; i++)
-        state_.data[i] = (i + 1) < args.size() ? boost::lexical_cast<simInt>(args[i + 1]) : 0;
+        state_.data[i] = (i + 1) < args.size() ? boost::lexical_cast<int>(args[i + 1]) : 0;
 }
 
 void DFVectorPack::onDataReceived(size_t inlet, DFData *data)

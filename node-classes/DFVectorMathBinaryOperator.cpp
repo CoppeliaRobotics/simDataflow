@@ -16,7 +16,7 @@ DFVectorMathBinaryOperator::DFVectorMathBinaryOperator(QDataflowModelNode *node,
         throw std::runtime_error((boost::format("invalid operator: %s") % op_).str());
 
     for(size_t i = 0, j = 1; i < 3 && j < args.size(); i++, j++)
-        state_.data[i] = (j < args.size()) ?  boost::lexical_cast<simFloat>(args[j]) : 0;
+        state_.data[i] = (j < args.size()) ?  boost::lexical_cast<float>(args[j]) : 0;
 }
 
 void DFVectorMathBinaryOperator::op(DFVector &x, const DFVector &y)

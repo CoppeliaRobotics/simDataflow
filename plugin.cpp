@@ -150,7 +150,7 @@ public:
     }
 
 private:
-    simInt menuItemHandle[1];
+    int menuItemHandle[1];
     std::map<QDataflowModelNode*,DFNodeID> nodeId;
     std::map<DFNodeID,QDataflowModelNode*> nodeById;
     bool pendingSceneLoad = false;

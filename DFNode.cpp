@@ -111,11 +111,11 @@ void DFNode::onDataReceived(size_t inlet, DFData *data)
     throw DFException(this, (boost::format("no method for %s on inlet %d") % data->tag() % inlet).str());
 }
 
-simInt DFNode::getObjectHandle(const std::string &strArg)
+int DFNode::getObjectHandle(const std::string &strArg)
 {
     try
     {
-        return boost::lexical_cast<simInt>(strArg);
+        return boost::lexical_cast<int>(strArg);
     }
     catch(boost::bad_lexical_cast &ex)
     {

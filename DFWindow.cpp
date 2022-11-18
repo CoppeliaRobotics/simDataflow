@@ -38,22 +38,22 @@ void DFWindow::resizeEvent(QResizeEvent* event)
 void DFWindow::saveGeometryToScene()
 {
     QRect g = geometry();
-    simInt d[4];
+    int d[4];
     d[0] = g.x();
     d[1] = g.y();
     d[2] = g.width();
     d[3] = g.height();
-    simWriteCustomDataBlock(sim_handle_scene, "Dataflow.Window.Geometry", (simChar*)&d[0], sizeof(simInt) * 4);
+    simWriteCustomDataBlock(sim_handle_scene, "Dataflow.Window.Geometry", (char*)&d[0], sizeof(int) * 4);
 }
 
 void DFWindow::restoreGeometryFromScene()
 {
-    simInt size = 0;
-    simChar *data = simReadCustomDataBlock(sim_handle_scene, "Dataflow.Window.Geometry", &size);
+    int size = 0;
+    char *data = simReadCustomDataBlock(sim_handle_scene, "Dataflow.Window.Geometry", &size);
     if(data)
     {
         sim::addLog(sim_verbosity_debug, "found a Dataflow.Window.Geometry block");
-        simInt *d = (simInt*)data;
+        int *d = (int*)data;
         setGeometry(QRect(d[0], d[1], d[2], d[3]));
     }
     else

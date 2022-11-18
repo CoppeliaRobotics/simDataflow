@@ -9,7 +9,7 @@
 class DFScalar : public DFData
 {
 public:
-    simFloat data;
+    float data;
 
     DFScalar operator=(const DFScalar &o);
 

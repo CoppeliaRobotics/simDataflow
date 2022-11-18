@@ -7,7 +7,7 @@
 class DFObjectPos : public DFNode
 {
 private:
-    simInt handle_, relToHandle_;
+    int handle_, relToHandle_;
     DFVector pos_;
 
 public:

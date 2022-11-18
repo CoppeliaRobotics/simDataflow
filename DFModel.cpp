@@ -171,8 +171,8 @@ void DFModel::saveGraphToScene()
 void DFModel::restoreGraphFromScene()
 {
     clearGraph();
-    simInt size = 0;
-    simChar *data = simReadCustomDataBlock(sim_handle_scene, "Dataflow.Graph", &size);
+    int size = 0;
+    char *data = simReadCustomDataBlock(sim_handle_scene, "Dataflow.Graph", &size);
     if(data)
     {
         sim::addLog(sim_verbosity_debug, "found a Dataflow.Graph block");
