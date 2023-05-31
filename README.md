@@ -3,10 +3,15 @@
 ### Compiling
 
 1. Install required packages for simStubsGen: see simStubsGen's [README](https://github.com/CoppeliaRobotics/include/blob/master/simStubsGen/README.md)
-2. Download and install Qt (same version as CoppeliaSim, i.e. 5.5.0)
-3. Checkout and compile
-```
-$ git clone --recursive https://github.com/CoppeliaRobotics/simExtDataflow.git
-$ cmake .
+2. Checkout, compile and install into CoppeliaSim:
+```sh
+$ git clone https://github.com/CoppeliaRobotics/simDataflow.git
+$ cd simDataflow
+$ git checkout coppeliasim-v4.5.0-rev0
+$ mkdir -p build && cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release ..
 $ cmake --build .
+$ cmake --install .
 ```
+
+NOTE: replace `coppeliasim-v4.5.0-rev0` with the actual CoppeliaSim version you have.

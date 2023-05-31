@@ -10,27 +10,27 @@
 class Plugin : public sim::Plugin
 {
 public:
-    void onStart()
+    void onInit()
     {
-        initInUiThread();
-
         setExtVersion("Dataflow Plugin");
         setBuildDate(BUILD_DATE);
+
+        initInSimThread();
     }
 
-    void onEnd()
+    void onCleanup()
     {
         UI_THREAD = NULL;
         SIM_THREAD = NULL;
     }
 
+    void onUIInit()
+    {
+        initInUiThread();
+    }
+
     void onInstancePass(sim::InstancePassFlags &flags, bool first)
     {
-        if(first)
-        {
-            initInSimThread();
-        }
-
         if(pendingSceneLoad)
         {
             pendingSceneLoad = false;
@@ -60,7 +60,7 @@ public:
         pendingSceneLoad = true;
     }
 
-    void onMenuItemSelected(int itemHandle, int itemState)
+    void onUIMenuItemSelected(int itemHandle, int itemState)
     {
         if(itemHandle == menuItemHandle[0])
         {
@@ -156,5 +156,5 @@ private:
     bool pendingSceneLoad = false;
 };
 
-SIM_PLUGIN(PLUGIN_NAME, PLUGIN_VERSION, Plugin)
+SIM_UI_PLUGIN(PLUGIN_NAME, PLUGIN_VERSION, Plugin)
 #include "stubsPlusPlus.cpp"

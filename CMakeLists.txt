@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.11)
-project(simExtDataflow)
+project(simDataflow)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -68,5 +68,5 @@ set(SOURCES
     external/QDataflowCanvas/qdataflowcanvas.cpp
     external/QDataflowCanvas/qdataflowmodel.cpp
 )
-coppeliasim_add_plugin(simExtDataflow SOURCES ${SOURCES})
-target_link_libraries(simExtDataflow Boost::boost Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport)
+coppeliasim_add_plugin(simDataflow SOURCES ${SOURCES})
+target_link_libraries(simDataflow Boost::boost Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport)
