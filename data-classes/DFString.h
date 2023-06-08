@@ -2,7 +2,7 @@
 #define DFSTRING_H_INCLUDED
 
 #include "DFData.h"
-#include "simLib.h"
+#include "simLib/simLib.h"
 #include <string>
 #include <sstream>
 
