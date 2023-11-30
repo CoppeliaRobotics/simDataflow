@@ -44,27 +44,27 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/QDataflowCanvas)
 add_definitions(-DQT_COMPIL)
 
-coppeliasim_generate_stubs(${CMAKE_CURRENT_BINARY_DIR}/generated XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.xml LUA_FILE ${CMAKE_CURRENT_SOURCE_DIR}/simDataflow.lua)
+coppeliasim_generate_stubs(${CMAKE_CURRENT_BINARY_DIR}/generated XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/sourceCode/callbacks.xml LUA_FILE ${CMAKE_CURRENT_SOURCE_DIR}/lua/simDataflow.lua)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/sourceCode/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 set(SOURCES
-    plugin.cpp
-    DFData.cpp
-    DFModel.cpp
-    DFNode.cpp
-    DFWindow.cpp
-    data-classes/DFBang.cpp
-    data-classes/DFScalar.cpp
-    data-classes/DFString.cpp
-    data-classes/DFVector.cpp
-    node-classes/DFMathBinaryOperator.cpp
-    node-classes/DFObjectPos.cpp
-    node-classes/DFPrint.cpp
-    node-classes/DFTrigger.cpp
-    node-classes/DFVectorMathBinaryOperator.cpp
-    node-classes/DFVectorPack.cpp
-    node-classes/DFVectorUnpack.cpp
+    sourceCode/plugin.cpp
+    sourceCode/DFData.cpp
+    sourceCode/DFModel.cpp
+    sourceCode/DFNode.cpp
+    sourceCode/DFWindow.cpp
+    sourceCode/data-classes/DFBang.cpp
+    sourceCode/data-classes/DFScalar.cpp
+    sourceCode/data-classes/DFString.cpp
+    sourceCode/data-classes/DFVector.cpp
+    sourceCode/node-classes/DFMathBinaryOperator.cpp
+    sourceCode/node-classes/DFObjectPos.cpp
+    sourceCode/node-classes/DFPrint.cpp
+    sourceCode/node-classes/DFTrigger.cpp
+    sourceCode/node-classes/DFVectorMathBinaryOperator.cpp
+    sourceCode/node-classes/DFVectorPack.cpp
+    sourceCode/node-classes/DFVectorUnpack.cpp
     external/QDataflowCanvas/qdataflowcanvas.cpp
     external/QDataflowCanvas/qdataflowmodel.cpp
 )
